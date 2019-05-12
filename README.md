@@ -10,3 +10,6 @@
 
 * 夜猫
   * Github: https://github.com/nightcatv
+
+* 譽錚
+  * Github: https://github.com/arashi1214
