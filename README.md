@@ -7,3 +7,6 @@
 
 * 丰嘉
   * Github: https://github.com/bessyhuang
+
+* 夜猫
+  * Github: https://github.com/nightcatv
