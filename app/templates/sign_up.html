@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %} index {% endblock title %}
+{% block content %}
+
+    <form>
+        <h1 class='page-title' style="text-align:center">Sing up</h1>
+        <div class='form-group col-xl-5 col-lg-5 col-md-6' style="margin:15px auto">
+            <label>學號</label>
+            <input type='text' class='form-control' name='id' required='required'> <!--number-->
+            
+            <label>姓名</label>
+            <input type='text' class='form-control' name='username' required='required'><!--name-->
+            
+            <label>e-mail</label>
+            <input type='email' class='form-control' name='email' required='required'> <!--e-mail-->
+
+            <label>設定密碼</label>
+            <input type='password' class='form-control' name='password' required='required'> <!--password--> 
+        </div>
+
+        <div style="text-align:center">
+         <button type='submit' class="btn btn-primary" id='btn_sign_up'>送出</button>
+            <!--
+            <script type="text/javascript">
+                $(function(){
+                    $('#btn_sign_up').click(function(){
+                        alert("註冊成功!")
+                        location.href='/'
+                    })
+                }) 
+            </script>
+            -->
+        </div>
+    </form>
+
+{% endblock %}
