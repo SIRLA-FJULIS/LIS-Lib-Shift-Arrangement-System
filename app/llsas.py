@@ -15,9 +15,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # 減少記憶體使用
 db = SQLAlchemy(app)
 
 class LoginForm(FlaskForm):
-    account = StringField("Account", validators = [DataRequired()])
-    password = PasswordField("Password")
-    submit = SubmitField("Submit")
+    account = StringField("學號", validators = [DataRequired()])
+    password = PasswordField("密碼")
+    submit = SubmitField("送出")
 
 @app.route('/')
 def index():
