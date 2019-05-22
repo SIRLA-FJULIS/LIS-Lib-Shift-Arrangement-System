@@ -19,6 +19,10 @@ def index():
 def signup():
     return render_template("sign_up.html")
 
+@app.route('/forgotpwd')
+def forgetpwd():
+    return render_template("forgot_pwd.html")
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404

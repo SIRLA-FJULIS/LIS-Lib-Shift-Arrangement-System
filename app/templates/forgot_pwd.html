@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %} index {% endblock title %}
+{% block content %}
+
+
+    <form>
+        <div class="jumbotron">
+            <h1 class='page-title' style="text-align:center">Forgot your password?</h1>
+            <div class='form-group col-xl-5 col-lg-5 col-md-6' style="margin:15px auto">
+                <label>學號</label>
+                <input type='text' class='form-control' name='id' required='required'> <!--number-->
+            </div>
+            <div class='form-group col-xl-5 col-lg-5 col-md-6' style="margin:15px auto">
+                <label>e-mail</label>
+                <input type='email' class='form-control' name='email' required='required'> <!--e-mail-->
+            </div>
+
+            <div style="text-align:center">
+             <button type='submit' class="btn btn-primary" id='btn_sign_up'>送出</button>
+                <!--
+                <script type="text/javascript">
+                    $(function(){
+                        $('#btn_sign_up').click(function(){
+                            alert("已寄信至您的信箱!")
+                            location.href='/'
+                        })
+                    }) 
+                </script>
+                -->
+            </div>
+        </div>
+    </form>
+
+{% endblock content %}
