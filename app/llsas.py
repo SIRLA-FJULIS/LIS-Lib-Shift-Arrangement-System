@@ -1,6 +1,9 @@
 from flask import Flask, render_template
 import os
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "llsas"
@@ -11,9 +14,24 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # 減少記憶體使用
 
 db = SQLAlchemy(app)
 
+class LoginForm(FlaskForm):
+    account = StringField("Account", validators = [DataRequired()])
+    password = PasswordField("Password")
+    submit = SubmitField("Submit")
+
 @app.route('/')
 def index():
     return render_template("index.html")
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    account = None
+    password = None
+    form = LoginForm()
+    if form.validate_on_submit():
+        account = form.account.data
+        form.account.data = ''
+    return render_template('login.html', form = form, account = account, password = password)
 
 @app.route('/signup')
 def signup():
