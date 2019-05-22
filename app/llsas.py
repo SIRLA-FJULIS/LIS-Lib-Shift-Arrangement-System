@@ -21,8 +21,8 @@ class LoginForm(FlaskForm):
     submit = SubmitField("送出")
 
 class ForgotPasswordForm(FlaskForm):
-    account = StringField("Account", validators = [DataRequired()])
-    email = EmailField("Email", validators = [DataRequired(), Email()])
+    account = StringField("學號", validators = [DataRequired()])
+    email = EmailField("電子信箱", validators = [DataRequired(), Email()])
     submit = SubmitField("Submit")
     
 @app.route('/')
