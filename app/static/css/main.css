@@ -1,7 +1,39 @@
+/* 避免sticky navbar 覆蓋到內容 */
 body {
     padding-top: 70px;
 }
 
 body,input,button,select,textarea{
     font-family: "Helvetica Neue", Helvetica, Arial, "微軟正黑體", "微软雅黑", sans-serif;
+}
+
+
+/* 讓footer可以正常出現在下方 */
+html, body {
+    height: 100%;
+}
+
+#wrap {
+    min-height: 100%;
+}
+
+#main {
+    overflow: auto;
+    padding-bottom: 50px;
+}
+
+.footer {
+    position: relative;
+    margin-top: -50px; /* negative value of footer height */
+    height: 50px;
+    clear:both;
+  }
+
+.footer_text{
+    font-size: 0.9rem;
+    margin: 0;
+}
+.sirla_link { 
+    color: inherit; 
+    text-decoration: underline;
 }
