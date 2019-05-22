@@ -1,32 +1,18 @@
 {% extends "base.html" %}
-{% block title %} index {% endblock title %}
+
+{% block title %} Find your password {% endblock title %}
 {% block content %}
-
-
-<form>
-    <h1 class='page-title mt-5' style="text-align:center">Find your password</h1>
-    <div class='form-group col-xl-5 col-lg-5 col-md-6' style="margin:15px auto">
-        <label>學號</label>
-        <input type='text' class='form-control' name='id' required='required'> <!--number-->
-    </div>
-    <div class='form-group col-xl-5 col-lg-5 col-md-6' style="margin:15px auto">
-        <label>e-mail</label>
-        <input type='email' class='form-control' name='email' required='required'> <!--e-mail-->
-    </div>
-
-    <div style="text-align:center">
-     <button type='submit' class="btn btn-primary" id='btn_forgot_pwd'>送出</button>
-        <!--
-        <script type="text/javascript">
-            $(function(){
-                $('#btn_forgot_pwd').click(function(){
-                    alert("已寄信至您的信箱!")
-                    location.href='/'
-                })
-            }) 
-        </script>
-        -->
-    </div>
-</form>
-
+    <form method="POST">
+        <h1 class='page-title mt-5' style="text-align: center;">Find your password</h1>
+        <div class="form-group col-xl-5 col-md-6" style="margin: 15px auto">
+            {{ form.hidden_tag() }}
+            {{ form.account.label }} 
+            {{ form.account(class="form-control", id="forgotPasswordAccountField") }}
+            {{ form.email.label }}
+            {{ form.email(class="form-control", id="forgotPasswordEmailField") }}
+        </div>
+        <div id="forgotPasswordConnects" style="text-align: center;">
+            {{ form.submit(class="btn btn-primary", id="forgotPasswordSubmit") }}
+        </div>
+    </form>
 {% endblock content %}

@@ -7,13 +7,13 @@
         <div class="form-group col-xl-5 col-md-6" style="margin: 15px auto">
             {{ form.hidden_tag() }}
             {{ form.account.label }} 
-            {{ form. account(class="form-control", id="signInAccountField") }}
+            {{ form.account(class="form-control", id="signInAccountField") }}
             {{ form.password.label }}
             {{ form.password(class="form-control", id="signInPasswordField") }}
         </div>
         <div id="signInConnects" style="text-align: center;">
             <div class="container">
-                <a href="/signup">Sign Up</a><span class="container"> | </span><a href="/forgotpwd">Forgot Password?</a>
+                <a href="/signup">Sign Up</a><span class="container"> | </span><a href="/forgotpassword">Forgot Password?</a>
             </div>
             <br/>
             {{ form.submit(class="btn btn-primary", id="signInSubmit") }}
