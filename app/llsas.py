@@ -14,9 +14,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////{}".format(db_path)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # 減少記憶體使用
 
 db = SQLAlchemy(app)
-
 class LoginForm(FlaskForm):
     account = StringField("學號", validators = [DataRequired()])
+    password = PasswordField("密碼")
+    submit = SubmitField("送出")
+
+class SingUp(FlaskForm):
+    account = StringField("學號", validators = [DataRequired()])
+    name = StringField("姓名", validators = [DataRequired()])
+    email = EmailField("電子信箱", validators = [DataRequired(), Email()])
     password = PasswordField("密碼")
     submit = SubmitField("送出")
 
@@ -39,9 +45,19 @@ def login():
         form.account.data = ''
     return render_template('login.html', form = form, account = account, password = password)
 
-@app.route('/signup')
+@app.route('/signup', methods = ['GET', 'POST'])
 def signup():
-    return render_template("sign_up.html")
+    form = SingUp()
+    if form.validate_on_submit():
+        account = form.account.data
+        form.name.data = ''
+
+        name = form.name.data
+        form.name.data = ''
+
+        email = form.email.data
+        form.email.data = ''
+    return render_template("sign_up.html",  form = form)
 
 @app.route('/forgotpassword', methods = ['GET', 'POST'])
 def forgotpassword():
