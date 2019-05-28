@@ -10,7 +10,11 @@
     <title>{% block title %}{% endblock title %}</title>
 </head>
 <body class="bg-light">
-    {% include "includes/_navbar.html" %}
+    {% if session['logged_in'] == True %}
+        {% include "includes/_navbar_logged_in.html" %}
+    {% else %}
+        {% include "includes/_navbar.html" %}
+    {% endif %}
     <div id="wrap">
         <div id="main" class="container">
             {% block content %}

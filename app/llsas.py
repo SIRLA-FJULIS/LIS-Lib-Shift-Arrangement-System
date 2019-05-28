@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session, redirect, url_for
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
@@ -43,6 +43,8 @@ def login():
     if form.validate_on_submit():
         account = form.account.data
         form.account.data = ''
+        session['logged_in'] = True
+        return redirect(url_for('dashboard'))
     return render_template('login.html', form = form, account = account, password = password)
 
 @app.route('/signup', methods = ['GET', 'POST'])
@@ -70,6 +72,15 @@ def forgotpassword():
         email = form.email.data
         form.email.data = ''
     return render_template('forgot_pwd.html', form = form, account = account, email = email)
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in')
+    return redirect(url_for('index'))
 
 @app.errorhandler(404)
 def page_not_found(e):
