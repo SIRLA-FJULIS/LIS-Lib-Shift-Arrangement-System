@@ -2,3 +2,4 @@
 venv
 ve
 __pycache__
+.env
