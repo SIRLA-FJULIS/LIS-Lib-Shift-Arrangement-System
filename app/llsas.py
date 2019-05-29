@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.fields.html5 import EmailField
-from wtforms.validators import DataRequired, Email
+from wtforms.validators import DataRequired, Email, EqualTo
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "llsas"
@@ -30,10 +30,16 @@ class ForgotPasswordForm(FlaskForm):
     account = StringField("學號", validators = [DataRequired()])
     email = EmailField("電子信箱", validators = [DataRequired(), Email()])
     submit = SubmitField("Submit")
-    
+
+class ChangePasswordForm(FlaskForm):
+    password_old = PasswordField("舊密碼", validators = [DataRequired()])
+    password_new = PasswordField("新密碼", validators = [DataRequired(),EqualTo("password_new_confirm", message="PASSWORD NEED MATCH")])
+    password_new_confirm = PasswordField("確認新密碼", validators=[DataRequired()])
+    submit = SubmitField("更改密碼")
+
 @app.route('/')
 def index():
-    return render_template("index.html")
+   return render_template("index.html")
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -89,3 +95,17 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template("500.html"), 500
+
+@app.route('/changepassword', methods=['GET', 'POST'])
+#@login_required  
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.old_password.data):
+            current_user.password = form.password.data
+            db.session.add(current_user)
+            flash('密碼修改完成！')
+            return redirect(url_for('logout'))
+        else:
+            flash('密碼不正確.')
+    return render_template("change_password.html", form=form)
