@@ -31,11 +31,11 @@ class ForgotPasswordForm(FlaskForm):
     email = EmailField("電子信箱", validators = [DataRequired(), Email()])
     submit = SubmitField("Submit")
 
-
-
-
-
-
+class ChangePasswordForm(FlaskForm):
+    password_old = PasswordField("舊密碼", validators = [DataRequired()])
+    password_new = PasswordField("新密碼", validators = [DataRequired(),EqualTo("password_new_confirm", message="PASSWORD NEED MATCH")])
+    password_new_confirm = PasswordField("確認新密碼", validators=[DataRequired()])
+    submit = SubmitField("更改密碼")
 
 class Book(FlaskForm):
     time1 =BooleanField('8:30-10:00')
