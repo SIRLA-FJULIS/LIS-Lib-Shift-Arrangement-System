@@ -19,13 +19,13 @@ html, body {
 
 #main {
     overflow: auto;
-    padding-bottom: 50px;
+    padding-bottom: 60px;
 }
 
 .footer {
     position: relative;
-    margin-top: -50px; /* negative value of footer height */
-    height: 50px;
+    margin-top: -60px; /* negative value of footer height */
+    height: 60px;
     clear:both;
   }
 
@@ -38,6 +38,16 @@ html, body {
     text-decoration: underline;
 }
 
+@media screen and (min-width: 768px) {
+    #main{
+        padding-bottom: 50px;
+    }
+    .footer{
+        margin-top: -50px;
+        height: 50px;
+    }
+    .md-break { display: none; }
+}
 /* small triangle of dropdown menu */
 /* 邊框 */
 .dropdown-menu::before {
