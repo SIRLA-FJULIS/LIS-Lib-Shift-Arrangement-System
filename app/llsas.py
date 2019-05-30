@@ -2,7 +2,7 @@ from flask import Flask, render_template, session, redirect, url_for
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email
 
@@ -30,7 +30,15 @@ class ForgotPasswordForm(FlaskForm):
     account = StringField("學號", validators = [DataRequired()])
     email = EmailField("電子信箱", validators = [DataRequired(), Email()])
     submit = SubmitField("Submit")
-    
+
+class Book(FlaskForm):
+    time1 =BooleanField('8:30-10:00')
+    time2 =BooleanField('10:00-12:00')
+    time3 =BooleanField('12:00-13:00')
+    time4 =BooleanField('13:30-15:30')
+    time5 =BooleanField('15:30-17:30')
+    submit = SubmitField("送出")
+
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -81,6 +89,11 @@ def dashboard():
 def logout():
     session.pop('logged_in')
     return redirect(url_for('index'))
+
+@app.route('/book', methods = ['GET', 'POST'])
+def book():
+    form = Book()
+    return render_template('book.html', form = form)
 
 @app.errorhandler(404)
 def page_not_found(e):
