@@ -2,7 +2,7 @@ from flask import Flask, render_template, session, redirect, url_for
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email, EqualTo
 
@@ -45,7 +45,12 @@ class Book(FlaskForm):
     time5 =BooleanField('15:30-17:30')
     submit = SubmitField("送出")
 
-@app.route('/')
+class CheckinStatus(FlaskForm):
+    time= DateField('刷卡時間', format='%Y:%m:%d')
+    submit_in = SubmitField("簽到")
+    submit_out = SubmitField("簽退")
+
+@app.route('/1')
 def index():
    return render_template("index.html")
 
@@ -100,6 +105,11 @@ def logout():
 def book():
     form = Book()
     return render_template('book.html', form = form)
+
+@app.route('/chekcin_status', methods = ['GET', 'POST'])
+def checkinstatus():
+    form = CheckinStatus()
+    return render_template('checkin_status.html', form = form)
 
 @app.errorhandler(404)
 def page_not_found(e):
