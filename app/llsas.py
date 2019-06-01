@@ -60,7 +60,7 @@ class UserDataTable(db.Model):
     userPassword = db.Column(db.String)
     userEmail = db.Column(db.String, unique = True)
     userRole = db.Column(db.String, index = True)
-    arrangements = db.relationship('ShiftArrangementTable', backref = 'users', lazy = 'dynamic')
+    arrangements = db.relationship('ShiftArrangementTable', backref = 'user', lazy = 'dynamic')
 
     def __repr__(self):
         return '<User %r:%r>' % self.userID, self.userName
