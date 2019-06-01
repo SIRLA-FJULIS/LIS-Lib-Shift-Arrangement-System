@@ -1,5 +1,5 @@
-from flask import Flask, render_template, session, redirect, url_for
 import os
+from flask import Flask, render_template, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -14,6 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////{}".format(db_path)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # 減少記憶體使用
 
 db = SQLAlchemy(app)
+
 class LoginForm(FlaskForm):
     account = StringField("學號", validators = [DataRequired()])
     password = PasswordField("密碼")
@@ -36,6 +37,32 @@ class ChangePasswordForm(FlaskForm):
     password_new = PasswordField("新密碼", validators = [DataRequired(),EqualTo("password_new_confirm", message="PASSWORD NEED MATCH")])
     password_new_confirm = PasswordField("確認新密碼", validators=[DataRequired()])
     submit = SubmitField("更改密碼")
+
+class UserDataTable(db.Model):
+    __tablename__ = 'userData'
+    userID = db.Column(db.Integer, primary_key = True, unique = True, index = True)
+    userName = db.Column(db.String(64), index = True)
+    userPassword = db.Column(db.String)
+    userEmail = db.Column(db.String, unique = True)
+    userRole = db.Column(db.String, index = True)
+    arrangements = db.relationship('ShiftArrangementTable', backref = 'users', lazy = 'dynamic')
+
+    def __repr__(self):
+        return '<User %r:%r>' % self.userID, self.userName
+
+class ShiftArrangementTable(db.Model):
+    __tablename__ = 'shiftArrangement'
+    arrangementID = db.Column(db.Integer, primary_key = True, unique = True, index = True)
+    arrangementDate = db.Column(db.Date, index = True)
+    arrangementPeriod = db.Column(db.String)
+    arrangementCheckIn = db.Column(db.DateTime, nullable = True)
+    arrangementCheckInState = db.Column(db.String(10), default = 'None')
+    arrangementCheckOut = db.Column(db.DateTime, nullable = True)
+    arrangementCheckOutState = db.Column(db.String(10), default = 'None')
+    uID = db.Column(db.Integer, db.ForeignKey('userData.userID'))
+
+    def __repr__(self):
+        return '<Arrangement %r:%r>' % self.asdf, self.arrangementDate
 
 @app.route('/')
 def index():
