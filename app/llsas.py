@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email, EqualTo
 
@@ -14,6 +14,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////{}".format(db_path)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # 減少記憶體使用
 
 db = SQLAlchemy(app)
+
+# ------------------- class --------------------
 
 class LoginForm(FlaskForm):
     account = StringField("學號", validators = [DataRequired()])
@@ -37,6 +39,19 @@ class ChangePasswordForm(FlaskForm):
     password_new = PasswordField("新密碼", validators = [DataRequired(),EqualTo("password_new_confirm", message="PASSWORD NEED MATCH")])
     password_new_confirm = PasswordField("確認新密碼", validators=[DataRequired()])
     submit = SubmitField("更改密碼")
+
+class Book(FlaskForm):
+    time1 =BooleanField('8:30-10:00')
+    time2 =BooleanField('10:00-12:00')
+    time3 =BooleanField('12:00-13:00')
+    time4 =BooleanField('13:30-15:30')
+    time5 =BooleanField('15:30-17:30')
+    submit = SubmitField("送出")
+
+class CheckinStatus(FlaskForm):
+    time= DateField('刷卡時間', format='%Y:%m:%d')
+    submit_in = SubmitField("簽到")
+    submit_out = SubmitField("簽退")
 
 class UserDataTable(db.Model):
     __tablename__ = 'userData'
@@ -63,6 +78,8 @@ class ShiftArrangementTable(db.Model):
 
     def __repr__(self):
         return '<Arrangement %r:%r>' % self.asdf, self.arrangementDate
+
+# ------------------- route --------------------
 
 @app.route('/')
 def index():
@@ -114,6 +131,16 @@ def dashboard():
 def logout():
     session.pop('logged_in')
     return redirect(url_for('index'))
+
+@app.route('/book', methods = ['GET', 'POST'])
+def book():
+    form = Book()
+    return render_template('book.html', form = form)
+
+@app.route('/chekcin_status', methods = ['GET', 'POST'])
+def checkinstatus():
+    form = CheckinStatus()
+    return render_template('checkin_status.html', form = form)
 
 @app.errorhandler(404)
 def page_not_found(e):
