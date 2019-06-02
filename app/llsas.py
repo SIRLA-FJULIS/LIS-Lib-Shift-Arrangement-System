@@ -40,7 +40,7 @@ class ChangePasswordForm(FlaskForm):
     password_new_confirm = PasswordField("確認新密碼", validators=[DataRequired()])
     submit = SubmitField("更改密碼")
 
-class Book(FlaskForm):
+class BookForm(FlaskForm):
     time1 =BooleanField('8:30-10:00')
     time2 =BooleanField('10:00-12:00')
     time3 =BooleanField('12:00-13:00')
@@ -48,7 +48,7 @@ class Book(FlaskForm):
     time5 =BooleanField('15:30-17:30')
     submit = SubmitField("送出")
 
-class CheckinStatus(FlaskForm):
+class CheckInOutForm(FlaskForm):
     time= DateField('刷卡時間', format='%Y:%m:%d')
     submit_in = SubmitField("簽到")
     submit_out = SubmitField("簽退")
@@ -137,10 +137,10 @@ def book():
     form = Book()
     return render_template('book.html', form = form)
 
-@app.route('/chekcin_status', methods = ['GET', 'POST'])
-def checkinstatus():
-    form = CheckinStatus()
-    return render_template('checkin_status.html', form = form)
+@app.route('/chekcinout', methods = ['GET', 'POST'])
+def check_in_out():
+    form = CheckInOutForm()
+    return render_template('check_in_out.html', form = form)
 
 @app.errorhandler(404)
 def page_not_found(e):

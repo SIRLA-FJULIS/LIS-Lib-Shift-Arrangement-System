@@ -5,12 +5,12 @@
         <h1 class='page-title mt-5' style="text-align: center;">簽到簽退</h1>
         <div class="form-group col-xl-5 col-md-6 mt-5 mx-auto text-center" >
         	{{ form.time.label}}
-        	{{ form.time(class="form-control", id="checkinStatusField") }}
+        	{{ form.time(class="form-control", id="checkInOutField") }}
         </div>	
 
-        <div id="checkinStatus" class="mb-4 text-center  ">
-            {{ form.submit_in(class="btn-primary",id="checkinStatus") }}
-            {{ form.submit_out(class="btn-primary",id="checkinStatus") }}
+        <div id="checkInOut" class="mb-4 text-center  ">
+            {{ form.submit_in(class="btn-primary",id="checkInOut") }}
+            {{ form.submit_out(class="btn-primary",id="checkInOut") }}
         </div>
     </form>
 {% endblock content %}
