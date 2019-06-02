@@ -137,7 +137,7 @@ def book():
     form = Book()
     return render_template('book.html', form = form)
 
-@app.route('/chekcinout', methods = ['GET', 'POST'])
+@app.route('/checkinout', methods = ['GET', 'POST'])
 def check_in_out():
     form = CheckInOutForm()
     return render_template('check_in_out.html', form = form)
