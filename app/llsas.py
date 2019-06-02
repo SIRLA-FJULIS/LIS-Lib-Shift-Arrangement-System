@@ -77,7 +77,7 @@ class ShiftArrangementTable(db.Model):
     uID = db.Column(db.Integer, db.ForeignKey('userData.userID'))
 
     def __repr__(self):
-        return '<Arrangement %r:%r>' % self.asdf, self.arrangementDate
+        return '<Arrangement %r:%r>' % self.uID, self.arrangementDate
 
 # ------------------- route --------------------
 
