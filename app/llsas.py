@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "llsas"
 db_path = os.path.dirname(__file__)
 db_path = os.path.join(db_path, 'llsas.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////{}".format(db_path)
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{}".format(db_path)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # 減少記憶體使用
 
 db = SQLAlchemy(app)
