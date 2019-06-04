@@ -63,7 +63,7 @@ class UserDataTable(db.Model):
     arrangements = db.relationship('ShiftArrangementTable', backref = 'user', lazy = 'dynamic')
 
     def __repr__(self):
-        return '<User %r:%r>' % self.userID, self.userName
+        return '<User %r:%r>' % (self.userID, self.userName)
 
 class ShiftArrangementTable(db.Model):
     __tablename__ = 'shiftArrangement'
@@ -77,7 +77,7 @@ class ShiftArrangementTable(db.Model):
     uID = db.Column(db.Integer, db.ForeignKey('userData.userID'))
 
     def __repr__(self):
-        return '<Arrangement %r:%r>' % self.uID, self.arrangementDate
+        return '<Arrangement %r:%r>' % (self.uID, self.arrangementDate)
 
 # ------------------- route --------------------
 
