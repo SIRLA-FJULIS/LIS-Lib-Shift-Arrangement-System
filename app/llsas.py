@@ -8,8 +8,14 @@ from wtforms.validators import DataRequired, Email, EqualTo
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "llsas"
+<<<<<<< HEAD
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'llsas.db')
+=======
+db_path = os.path.dirname(__file__)
+db_path = os.path.join(db_path, 'llsas.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{}".format(db_path)
+>>>>>>> a95bd1d4445e095911c213378ba374c2d9243348
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # 減少記憶體使用
 db = SQLAlchemy(app)
 
@@ -63,7 +69,7 @@ class ChangePasswordForm(FlaskForm):
     password_new_confirm = PasswordField("確認新密碼", validators=[DataRequired()])
     submit = SubmitField("更改密碼")
 
-class Book(FlaskForm):
+class BookForm(FlaskForm):
     time1 =BooleanField('8:30-10:00')
     time2 =BooleanField('10:00-12:00')
     time3 =BooleanField('12:00-13:00')
@@ -71,11 +77,40 @@ class Book(FlaskForm):
     time5 =BooleanField('15:30-17:30')
     submit = SubmitField("送出")
 
-class CheckinStatus(FlaskForm):
+class CheckInOutForm(FlaskForm):
     time= DateField('刷卡時間', format='%Y:%m:%d')
     submit_in = SubmitField("簽到")
     submit_out = SubmitField("簽退")
 
+<<<<<<< HEAD
+=======
+class UserDataTable(db.Model):
+    __tablename__ = 'userData'
+    userID = db.Column(db.Integer, primary_key = True, unique = True, index = True)
+    userName = db.Column(db.String(64), index = True)
+    userPassword = db.Column(db.String)
+    userEmail = db.Column(db.String, unique = True)
+    userRole = db.Column(db.String, index = True)
+    arrangements = db.relationship('ShiftArrangementTable', backref = 'user', lazy = 'dynamic')
+
+    def __repr__(self):
+        return '<User %r:%r>' % self.userID, self.userName
+
+class ShiftArrangementTable(db.Model):
+    __tablename__ = 'shiftArrangement'
+    arrangementID = db.Column(db.Integer, primary_key = True, unique = True, index = True)
+    arrangementDate = db.Column(db.Date, index = True)
+    arrangementPeriod = db.Column(db.String)
+    arrangementCheckIn = db.Column(db.DateTime, nullable = True)
+    arrangementCheckInState = db.Column(db.String(10), default = 'None')
+    arrangementCheckOut = db.Column(db.DateTime, nullable = True)
+    arrangementCheckOutState = db.Column(db.String(10), default = 'None')
+    uID = db.Column(db.Integer, db.ForeignKey('userData.userID'))
+
+    def __repr__(self):
+        return '<Arrangement %r:%r>' % self.uID, self.arrangementDate
+
+>>>>>>> a95bd1d4445e095911c213378ba374c2d9243348
 # ------------------- route --------------------
 
 @app.route('/')
@@ -134,10 +169,10 @@ def book():
     form = Book()
     return render_template('book.html', form = form)
 
-@app.route('/chekcin_status', methods = ['GET', 'POST'])
-def checkinstatus():
-    form = CheckinStatus()
-    return render_template('checkin_status.html', form = form)
+@app.route('/checkinout', methods = ['GET', 'POST'])
+def check_in_out():
+    form = CheckInOutForm()
+    return render_template('check_in_out.html', form = form)
 
 @app.errorhandler(404)
 def page_not_found(e):
