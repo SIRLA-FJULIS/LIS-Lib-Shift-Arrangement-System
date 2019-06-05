@@ -95,6 +95,8 @@ def login():
         form.account.data = ''
         session['logged_in'] = True
         return redirect(url_for('dashboard'))
+
+    
     return render_template('login.html', form = form, account = account, password = password)
 
 @app.route('/signup', methods = ['GET', 'POST'])
