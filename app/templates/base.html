@@ -11,9 +11,9 @@
 </head>
 <body class="bg-light">
     {% if session['logged_in'] == True %}
-        {% include "includes/_navbar_logged_in.html" %}
+        {% include "user/_navbar_logged_in.html" %}
     {% else %}
-        {% include "includes/_navbar.html" %}
+        {% include "_navbar.html" %}
     {% endif %}
     <div id="wrap">
         <div id="main" class="container">
