@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="{{ url_for('main.index') }}">
         <img src="../../static/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
         LIS輪值系統
     </a>
@@ -9,7 +9,7 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/">首頁</a>
+                <a class="nav-link" href="{{ url_for('main.index') }}">首頁</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">最新消息</a>
@@ -18,8 +18,8 @@
                 <a class="nav-link" href="#">操作手冊</a>
             </li>
         </ul>
-        <a class="btn btn-light px-3 mr-md-3 mt-md-0 mt-1 mr-1" href="login" role="button">登入</a>
-        <a class="btn btn-outline-light px-3 mt-md-0 mt-1" href="signup" role="button">註冊</a>
+        <a class="btn btn-light px-3 mr-md-3 mt-md-0 mt-1 mr-1" href="{{ url_for('auth.login') }}" role="button">登入</a>
+        <a class="btn btn-outline-light px-3 mt-md-0 mt-1" href="{{ url_for('auth.signup') }}" role="button">註冊</a>
     </div>
 </ul>
 </nav>

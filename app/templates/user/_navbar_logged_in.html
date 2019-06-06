@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="{{ url_for('main.index') }}">
         <img src="../../static/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
         LIS輪值系統
     </a>
@@ -9,7 +9,7 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/">首頁</a>
+                <a class="nav-link" href="{{ url_for('main.index') }}">首頁</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">最新消息</a>
@@ -24,13 +24,13 @@
                     土豆
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item"  href="dashboard"><h5 class="font-weight-bolder mb-0">土豆</h5></a>
-                    <a class="dropdown-item small" href="dashboard">404040236</a>
+                    <a class="dropdown-item" href="{{ url_for('user.dashboard') }}"><h5 class="font-weight-bolder mb-0">土豆</h5></a>
+                    <a class="dropdown-item small" href="{{ url_for('user.dashboard') }}">404040236</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="dashboard">個人頁面</a>
-                    <a class="dropdown-item" href="#">預約輪值</a>
-                    <a class="dropdown-item" href="changepassword">修改密碼</a>
-                    <a class="dropdown-item" href="logout" role="button">登出</a>
+                    <a class="dropdown-item" href="{{ url_for('user.dashboard') }}">個人頁面</a>
+                    <a class="dropdown-item" href="{{ url_for('user.book') }}">預約輪值</a>
+                    <a class="dropdown-item" href="#">修改密碼</a>
+                    <a class="dropdown-item" href="{{ url_for('auth.logout') }}" role="button">登出</a>
                 </div>
             </li>
         </ul>
