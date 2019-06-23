@@ -22,7 +22,7 @@ def create_app(config_name):
     from app.admin import bp as admin_blueprint
     app.register_blueprint(admin_blueprint)
 
-    from app.errors import bp as errors_blueprint
+    from app.errors import errors as errors_blueprint
     app.register_blueprint(errors_blueprint)
 
     return app
