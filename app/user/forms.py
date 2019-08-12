@@ -8,3 +8,9 @@ class BookForm(FlaskForm):
     time4 =BooleanField('13:30-15:30')
     time5 =BooleanField('15:30-17:30')
     submit = SubmitField("送出")
+
+class ContactForm(FlaskForm):
+    topic = StringField("主旨", validators = [DataRequired()])
+    email = EmailField("Emai",validators = [DataRequired()])
+    content = StringField("內容", validators = [DataRequired()])
+    submit = SubmitField("送出")

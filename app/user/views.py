@@ -10,3 +10,8 @@ def dashboard():
 def book():
     form = BookForm()
     return render_template('user/book.html', form = form)
+
+@bp.route('/contact', methods = ['GET', 'POST'])
+def contact():
+    form = ContactForm()
+    return render_template('user/contact.html', form = form)
