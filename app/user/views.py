@@ -1,5 +1,6 @@
 from flask import render_template
 from app.user.forms import BookForm
+from app.user.forms import ContactForm
 from app.user import bp
 
 @bp.route('/dashboard')
