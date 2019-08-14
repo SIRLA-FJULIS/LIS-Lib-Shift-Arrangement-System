@@ -1,5 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, SubmitField
+from wtforms import BooleanField, SubmitField, StringField
+from wtforms.fields.html5 import EmailField
+from wtforms.validators import DataRequired
 
 class BookForm(FlaskForm):
     time1 =BooleanField('8:30-10:00')
