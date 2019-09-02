@@ -9,58 +9,87 @@
         color: #bbb;
     }
 
-    .carousel-control-prev,
-    .carousel-control-next {
-        background-color: #909090;
-    }
-
     #cal table {
-        margin: 0 10%;
-        width: 80%;
-        height: 80%;
+        margin: 0 15%;
+        width: 70%;
+        height: 70%;
+        text-align: center;
     }
 
     #cal h1 {
         background-color: #fff;
-        padding: 3px;
+        text-align: center;
+    }
+
+    #cal td {
+        height: 70px;
+    }
+
+    .carousel-bottom {
+        position: relative;
+        margin: 0 15%;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 60px;
+        background-color: #A0A0A0;
+    }
+
+    .carousel-indicators {
+        background-color: #A0A0A0;
+        position: relative;
+        margin: 0 60px;
+    }
+
+    .carousel-indicators li {
+        width: 40px;
+        height: 6px;
+        margin: 0 5px;
     }
 
     </style>
 {% endblock head %}
 
 {% block content %}
-    <div id="cal" class="carousel slide" data-ride="carousel">
+    <div id="cal" class="carousel slide" data-ride="carousel" data-interval="false">
         <div class="carousel-inner">
-        {% for month in cal %}
-        {% set current_month = loop.index %}
-        <div class="carousel-item{% if loop.index == 1 %} active{% endif %}">
-            <h1>{{ ['January', 'Febuary', 'March', 'April',
-                    'May', 'June', 'July', 'August',
-                    'September', 'October', 'November', 'December'][loop.index0] }} {{ year }}</h1>
-            <table>
-                {% for week in month %}
-                <tr>
-                    {% for date in week %}
-                        {% if date.month == current_month %}
-                        <td class="current-month">
-                        {% else %}
-                        <td class="past-month">
-                        {% endif %}
-                        {{ date.day }}
-                        </td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </table>
+            {% for month in cal %}
+                {% set current_month = loop.index %}
+                <div class="carousel-item{% if loop.index == 1 %} active{% endif %}">
+                    <h1>{{ ['January', 'Febuary', 'March', 'April',
+                            'May', 'June', 'July', 'August',
+                            'September', 'October', 'November', 'December'][loop.index0] }} {{ year }}</h1>
+                    <table class="calendar">
+                        {% for week in month %}
+                        <tr>
+                            {% for date in week %}
+                                {% if date.month == current_month %}
+                                <td class="current-month">
+                                {% else %}
+                                <td class="past-month">
+                                {% endif %}
+                                {{ date.day }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-        <a class="carousel-control-prev" href="#cal" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#cal" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
+        <div class="carousel-bottom">
+            <a class="carousel-control-prev" href="#cal" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </a>
+            <ol class="carousel-indicators">
+                {% for month in cal %}
+                    <li data-target="#cal" data-slide-to="{{ loop.index0 }}" class="{% if loop.index0 == 0 %}active{% endif %}"></li>
+                {% endfor %}
+            </ol>
+            <a class="carousel-control-next" href="#cal" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </a>
+        </div>
     </div>
 {% endblock content %}
