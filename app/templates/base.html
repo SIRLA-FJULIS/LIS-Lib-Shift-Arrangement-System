@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+{% block head %}
 <head>
     <link rel="icon" type="image/png" href="../static/../static/images/logo.png" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -9,6 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{% endblock title %}</title>
 </head>
+{% endblock head %}
 <body class="bg-light">
     {% if session['logged_in'] == True %}
         {% include "user/_navbar_logged_in.html" %}
