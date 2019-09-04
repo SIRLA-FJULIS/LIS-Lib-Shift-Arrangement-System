@@ -12,8 +12,10 @@
 </head>
 {% endblock head %}
 <body class="bg-light">
-    {% if session['logged_in'] == True %}
+    {% if session['logged_in'] == True and session['role'] == 'User' %}
         {% include "user/_navbar_logged_in.html" %}
+    {% elif session['logged_in'] == True and session['role'] == 'Admin' %}
+        {% include "admin/_adnavbar.html" %}
     {% else %}
         {% include "_navbar.html" %}
     {% endif %}

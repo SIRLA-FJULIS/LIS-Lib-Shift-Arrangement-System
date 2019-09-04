@@ -6,3 +6,7 @@ from app.admin import bp
 def check_in_out():
     form = CheckInOutForm()
     return render_template('admin/check_in_out.html', form = form)
+
+@bp.route('/admin_dashboard', methods = ['GET', 'POST'])
+def dashboard():
+    return render_template('admin/dashboard.html')

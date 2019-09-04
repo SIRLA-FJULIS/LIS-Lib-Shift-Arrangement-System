@@ -11,9 +11,12 @@ def login():
         account = form.account.data
         form.account.data = ''
         session['logged_in'] = True
-        return redirect(url_for('user.dashboard'))
-
-    
+        if account == '404040000':
+            session['role'] = 'Admin'
+            return redirect(url_for('admin.dashboard'))
+        else:
+            session['role'] = 'User'
+            return redirect(url_for('user.dashboard'))
     return render_template('auth/login.html', form = form, account = account, password = password)
 
 @bp.route('/signup', methods = ['GET', 'POST'])
