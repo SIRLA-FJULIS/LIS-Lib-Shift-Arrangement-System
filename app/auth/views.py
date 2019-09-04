@@ -31,7 +31,7 @@ def signup():
 
         email = form.email.data
         form.email.data = ''
-    return render_template("auth/sign_up.html",  form = form)
+    return render_template("auth/sign_up.html", form = form)
 
 @bp.route('/forgotpassword', methods = ['GET', 'POST'])
 def forgotpassword():
