@@ -67,3 +67,12 @@ main { flex: 1; }
         top: 35px;
     }
 }
+
+/* navbar dropdown submenu */
+.dropdown-submenu:hover > ul.dropdown-menu {
+    display: block;
+}
+.dropdown-submenu > ul.dropdown-menu::after,
+.dropdown-submenu > ul.dropdown-menu::before {
+    display: none;
+}
