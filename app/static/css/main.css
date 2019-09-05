@@ -9,25 +9,13 @@ body,input,button,select,textarea{
 
 
 /* 讓footer可以正常出現在下方 */
-html, body {
-    height: 100%;
+body {
+    display: flex;
+    flex-flow: column;
+    min-height: 100vh;
 }
 
-#wrap {
-    min-height: 100%;
-}
-
-#main {
-    overflow: auto;
-    padding-bottom: 60px;
-}
-
-.footer {
-    position: relative;
-    margin-top: -60px; /* negative value of footer height */
-    height: 60px;
-    clear:both;
-  }
+main { flex: 1; }
 
 .footer_text{
     font-size: 0.9rem;
@@ -38,16 +26,6 @@ html, body {
     text-decoration: underline;
 }
 
-@media screen and (min-width: 768px) {
-    #main{
-        padding-bottom: 50px;
-    }
-    .footer{
-        margin-top: -50px;
-        height: 50px;
-    }
-    .md-break { display: none; }
-}
 /* small triangle of dropdown menu */
 /* 邊框 */
 .dropdown-menu::before {

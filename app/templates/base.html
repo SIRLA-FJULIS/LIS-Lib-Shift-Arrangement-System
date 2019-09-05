@@ -19,16 +19,13 @@
     {% else %}
         {% include "_navbar.html" %}
     {% endif %}
-    <div id="wrap">
-        <div id="main" class="container">
-            {% block content %}
-            {% endblock content %}
-        </div>
-    </div>
+    <main class="container">
+        {% block content %}
+        {% endblock content %}
+    </main>
     <footer class="footer bg-secondary text-light">
-        <p class="footer_text text-center pt-2 mx-3">
-            &copy 2019 系學會系館股＠輔大圖資. <br class="md-break">
-            Created by 
+        <p class="footer_text text-center py-3 mx-3">
+            &copy 2019 系學會系館股＠輔大圖資. Created by 
             <a class="sirla_link" href="https://sirla-fjulis.github.io/">
                 <img src="../../static/images/SIRLA_Logo_50X48.png" width="22" height="22" class="align-text-bottom d-inline-block" alt="">SIRLA
             </a>
