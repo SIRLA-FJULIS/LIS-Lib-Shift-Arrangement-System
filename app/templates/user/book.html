@@ -10,7 +10,7 @@
     }
 
     #cal {
-        height: 400px;
+        max-width: 800px;
     }
 
     .carousel-inner,
@@ -19,56 +19,53 @@
     }
 
     #cal table {
-        margin: 0 15%;
-        width: 70%;
-        height: 80%;
-        text-align: center;
+        width: 100%;
+        height: 430px;
+        text-align: right;
     }
+
+    #cal table tr {
+        vertical-align: top;
+    }
+
+    #cal table td {
+        padding: 8px;
+    }
+
     #cal h1 {
         background-color: #fff;
         text-align: center;
     }
 
-    #cal td {
-        height: auto;
-    }
-
-    .carousel-bottom {
-        position: relative;
-        margin: 15px 15% 0 15%;
-    }
-
-    .carousel-control-prev,
-    .carousel-control-next {
-        width: 60px;
-        background-color: #A0A0A0;
-    }
-
-    .carousel-indicators {
-        background-color: #A0A0A0;
-        position: relative;
-        margin: 0 60px;
-    }
-
-    .carousel-indicators li {
-        width: 40px;
-        height: 6px;
-        margin: 0 5px;
+    #cal .calendar-top {
+        height: 40px;
     }
 
     </style>
 {% endblock head %}
 
 {% block content %}
-    <div id="cal" class="carousel slide" data-ride="carousel" data-interval="false">
+    <div id="cal" class="carousel mx-auto" data-ride="carousel" data-interval="false">
         <div class="carousel-inner">
             {% for month in cal %}
                 {% set current_month = loop.index %}
                 <div class="carousel-item{% if loop.index == 1 %} active{% endif %}">
-                    <h1>{{ ['January', 'Febuary', 'March', 'April',
-                            'May', 'June', 'July', 'August',
-                            'September', 'October', 'November', 'December'][loop.index0] }} {{ year }}</h1>
-                    <table class="calendar">
+                    <div class="calendar-top mb-4 d-flex justify-content-between">
+                        <h3>{{ year }} {{ ['一月', '二月', '三月', '四月',
+                                '五月', '六月', '七月', '八月',
+                                '九月', '十月', '十一月', '十二月'][loop.index0] }}
+                        </h3>
+                        <h3>預約輪值</h3>
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="$('.carousel').carousel('prev');">
+                                    <span class="oi oi-chevron-left"></span>
+                            </button>
+                            <button class="btn btn-primary" onclick="$('.carousel').carousel('next');">
+                                <span class="oi oi-chevron-right"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <table class="calendar table-bordered">
                         {% for week in month %}
                         <tr>
                             {% for date in week %}
@@ -85,19 +82,6 @@
                     </table>
                 </div>
             {% endfor %}
-        </div>
-        <div class="carousel-bottom">
-            <a class="carousel-control-prev" href="#cal" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            </a>
-            <ol class="carousel-indicators">
-                {% for month in cal %}
-                    <li data-target="#cal" data-slide-to="{{ loop.index0 }}" class="{% if loop.index0 == 0 %}active{% endif %}"></li>
-                {% endfor %}
-            </ol>
-            <a class="carousel-control-next" href="#cal" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            </a>
         </div>
     </div>
 {% endblock content %}
