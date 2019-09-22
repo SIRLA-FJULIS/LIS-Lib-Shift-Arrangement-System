@@ -16,14 +16,14 @@ class Table_UserData(db.Model):
 
 class Table_ShiftArrangement(db.Model):
     __tablename__ = 'shiftArrangement'
-    arrangementID = db.Column(db.Integer, primary_key = True, unique = True, index = True)
-    arrangementDate = db.Column(db.Date, index = True)
-    arrangementCheckIn = db.Column(db.DateTime, nullable = True)
-    arrangementCheckInState = db.Column(db.String(10), default = 'None')
-    arrangementCheckOut = db.Column(db.DateTime, nullable = True)
-    arrangementCheckOutState = db.Column(db.String(10), default = 'None')
-    uID = db.Column(db.Integer, db.ForeignKey('Table_UserData.userID'))
-    dID = db.Column(db.Integer, db.ForeignKey('Table_Duty.dutyID'))
+    id = db.Column(db.Integer, primary_key = True, unique = True, index = True)
+    date = db.Column(db.Date, index = True)
+    checkIn = db.Column(db.DateTime, nullable = True)
+    checkInState = db.Column(db.String(10), default = 'None')
+    checkOut = db.Column(db.DateTime, nullable = True)
+    checkOutState = db.Column(db.String(10), default = 'None')
+    uid = db.Column(db.Integer, db.ForeignKey('Table_UserData.userID'))
+    did = db.Column(db.Integer, db.ForeignKey('Table_Duty.dutyID'))
     modification = db.relationship('Table_ModifyApplication', backref = 'arrangement', lazy = 'dynamic')
     def __repr__(self):
         return '<Arrangement %r : %r>' % (self.uID, self.arrangementDate)
