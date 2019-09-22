@@ -1,6 +1,7 @@
 from flask import render_template
 from app.admin.forms import CheckInOutForm, NewsForm, WorkingContentForm
 from app.admin import bp
+from flask_sqlalchemy import SQLAlchemy
 
 @bp.route('/checkinout', methods = ['GET', 'POST'])
 def check_in_out():
