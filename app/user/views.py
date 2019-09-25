@@ -1,5 +1,5 @@
-from flask import render_template
-from app.user.forms import ContactForm
+from flask import render_template, redirect, url_for
+from app.user.forms import ContactForm, ReserveForm
 from app.user import bp
 from calendar import Calendar
 from datetime import date
@@ -18,4 +18,19 @@ def book():
 @bp.route('/contact', methods = ['GET', 'POST'])
 def contact():
     form = ContactForm()
-    return render_template('user/contact.html', form = form)
+    return render_template('user/contact.html', form=form)
+
+@bp.route('/reserve', methods = ['GET', 'POST'])
+def reserve():
+    id = None
+    date = None
+    period = None
+    form = ReserveForm()
+    if form.validate_on_submit():
+        id = form.id.data
+        form.id.data = ''
+        date = form.date.data
+        form.date.data = ''
+        period = form.period.data
+        form.period.data = ''
+    return render_template('user/reserve.html', form=form)

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+     <form method="POST">
+
+        <div class="form-group col-xl-5 col-md-6 mb-4 mx-auto" >
+        	{{ form.hidden_tag() }}
+            {{ form.id.label }} 
+            {{ form.id(class="form-control", id="reserveIDField") }}
+
+            {{ form.date.label }}
+            {{ form.date(class="form-control", id="reserveDateField") }}
+
+            {{ form.period.label }}
+            {{ form.period(class="form-control", id="reservePeriodField") }}
+        </div>
+       
+        <div id="contactConnects" class="mb-4 text-center" >
+        
+            {{ form.submit(class="btn btn-primary", id="contactSubmit") }}
+            <br>
+        </div>
+
+    </form>
+{% endblock content %}
