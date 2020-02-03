@@ -4,7 +4,7 @@ from app.user import bp
 from calendar import Calendar
 from datetime import date
 
-@bp.route('/dashboard')
+@bp.route('/user')
 def dashboard():
     return render_template('user/dashboard.html')
 
