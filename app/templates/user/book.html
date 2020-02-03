@@ -37,13 +37,13 @@
                                     {% else %}
                                     <td class="past-month">
                                     {% endif %}
-                                        <a href="#" class="reserve-link" data-month="{{date.month}}" data-day="{{date.day}}">
+                                        <a href="#" class="reserve-link" data-year="{{date.year}}" data-month="{{date.month}}" data-day="{{date.day}}">
                                             {{ date.day }}
                                             <div class="reserve-status">
                                                 <span class="dot dot-success"></span>
                                                 <span class="dot dot-danger"></span>
                                                 <span class="dot dot-success"></span>
-                                                <span class="dot dot-danger"></span>
+                                                <span class="dot dot-success"></span>
                                                 <span class="dot dot-danger"></span>
                                             </div>
                                         </a>
@@ -71,13 +71,36 @@
             <div class="modal-body">
                 <form method="POST" id="reserveForm" class="form-group">
                     {{ form.hidden_tag() }}
+                    {{ form.year }}
+                    {{ form.month }}
+                    {{ form.day }}
                     {{ form.period.label }}
                     {{ form.period(class="form-control", id="peroid") }}
                 </form>
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-            <button type="submit" form="reserveForm"  class="btn btn-primary">確認預約</button>
+            <button id="submitReserve" type="submit" form="reserveForm" class="btn btn-primary">確認預約</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Ok Modal -->
+    <div class="modal fade" id="okModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="okModalTitle">完成預約</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <p>成功預約!</p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
             </div>
         </div>
         </div>
@@ -87,10 +110,29 @@
 {% block custom_script %}
     <script>
         $('#cal').on('click', '.reserve-link', function(){
+            var year = $(this).data('year');
             var month = $(this).data('month');
             var day = $(this).data('day');
+            $("#year").val(year);
+            $("#month").val(month);
+            $("#day").val(day);
             $('#reserveModal').modal('show'); //顯示編輯畫面
-            $('#reserveModalTitle').text(`${month}月${day}日`);
+            $('#reserveModalTitle').text(`${year}年${month}月${day}日`);
+        });
+
+        $('#reserveForm').submit(function(event){
+            event.preventDefault(event);
+            var year = $(this).data('year');
+            var month = $(this).data('month');
+            var day = $(this).data('day');
+            $.ajax({
+                type: 'POST',   
+                url: '/book',
+                data: $('#reserveForm').serialize()
+            }).done(function(value) {
+                $('#reserveModal').modal('hide');
+                $('#okModal').modal('show');
+            });
         });
     </script>
 {% endblock custom_script %}

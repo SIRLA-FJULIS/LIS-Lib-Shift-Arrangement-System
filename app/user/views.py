@@ -18,10 +18,13 @@ def book():
     cal_list = [[cal.monthdatescalendar(year+j, i+1) for i in range(12)] for j in range(2)]
     form = ReserveForm()
     if form.validate_on_submit():
+        reserve_date = form.year.data + "-" + form.month.data + "-" + form.day.data
+        print(reserve_date)
         period = form.period.data
         form.period.data = ''
+        return redirect(url_for('user.book'))
     return render_template('user/book.html', today_year=year, cal=cal_list, form=form)
-
+ 
 @bp.route('/contact', methods = ['GET', 'POST'])
 def contact():
     form = ContactForm()
