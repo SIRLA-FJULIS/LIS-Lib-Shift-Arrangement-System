@@ -10,27 +10,20 @@ def dashboard():
 
 @bp.route('/book', methods = ['GET', 'POST'])
 def book():
+    id = None
+    reserve_date = None
+    period = None
     cal = Calendar(0)
     year = date.today().year
     cal_list = [cal.monthdatescalendar(year, i+1) for i in range(12)]
-    return render_template('user/book.html', year=year, cal=cal_list)
+    form = ReserveForm()
+    if form.validate_on_submit():
+        period = form.period.data
+        form.period.data = ''
+        print(peroid)
+    return render_template('user/book.html', year=year, cal=cal_list, form=form)
 
 @bp.route('/contact', methods = ['GET', 'POST'])
 def contact():
     form = ContactForm()
     return render_template('user/contact.html', form=form)
-
-@bp.route('/reserve', methods = ['GET', 'POST'])
-def reserve():
-    id = None
-    date = None
-    period = None
-    form = ReserveForm()
-    if form.validate_on_submit():
-        id = form.id.data
-        form.id.data = ''
-        date = form.date.data
-        form.date.data = ''
-        period = form.period.data
-        form.period.data = ''
-    return render_template('user/reserve.html', form=form)

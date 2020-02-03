@@ -3,45 +3,6 @@
 
 {% block head %}
     {{ super() }}
-    <style type="text/css">
-
-    td.past-month {
-        color: #bbb;
-    }
-
-    #cal {
-        max-width: 800px;
-    }
-
-    .carousel-inner,
-    .carousel-item {
-        height: 100%;
-    }
-
-    #cal table {
-        width: 100%;
-        height: 430px;
-        text-align: right;
-    }
-
-    #cal table tr {
-        vertical-align: top;
-    }
-
-    #cal table td {
-        padding: 8px;
-    }
-
-    #cal h1 {
-        background-color: #fff;
-        text-align: center;
-    }
-
-    #cal .calendar-top {
-        height: 40px;
-    }
-
-    </style>
 {% endblock head %}
 
 {% block content %}
@@ -68,13 +29,15 @@
                     <table class="calendar table-bordered">
                         {% for week in month %}
                         <tr>
-                            {% for date in week %}
+                            {% for date in week %}                 
                                 {% if date.month == current_month %}
                                 <td class="current-month">
                                 {% else %}
                                 <td class="past-month">
                                 {% endif %}
-                                {{ date.day }}
+                                    <a href="#" class="reserve-link" data-month="{{date.month}}" data-day="{{date.day}}">
+                                        {{ date.day }}
+                                    </a>
                                 </td>
                             {% endfor %}
                         </tr>
@@ -84,4 +47,39 @@
             {% endfor %}
         </div>
     </div>
+
+    <!-- Reserve Modal -->
+    <div class="modal fade" id="reserveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="reserveModalTitle"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-group">
+                    {{ form.period.label }}
+                    {{ form.period(class="form-control", id="peroid") }}
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            <button type="button" class="btn btn-primary">確認預約</button>
+            </div>
+        </div>
+        </div>
+    </div>
 {% endblock content %}
+
+{% block custom_script %}
+    <script>
+        $('#cal').on('click', '.reserve-link', function(){
+            var month = $(this).data('month');
+            var day = $(this).data('day');
+            $('#reserveModal').modal('show'); //顯示編輯畫面
+            $('#reserveModalTitle').text(`${month}月${day}日`);
+        });
+    </script>
+{% endblock custom_script %}

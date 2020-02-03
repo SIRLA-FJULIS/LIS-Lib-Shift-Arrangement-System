@@ -3,7 +3,7 @@
 
 # 作者
 * 土豆
-  * Github: https://github.com/Bluebell3310
+  * Github: https://github.com/
 
 * 丰嘉
   * Github: https://github.com/bessyhuang
