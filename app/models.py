@@ -1,5 +1,6 @@
 from . import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -12,8 +13,8 @@ class Table_UserData(UserMixin, db.Model):
     password = db.Column(db.String(128))
     email = db.Column(db.String, unique = True, index = True)
     role = db.Column(db.String, index = True)
-    id_for_arrangements = db.relationship('Table_ShiftArrangement', backref = 'user', lazy = 'dynamic')
-    id_for_modification = db.relationship('Table_ModifyApplication', backref = 'user', lazy = 'dynamic')
+    id_for_arrangements = db.relationship('shiftArrangement', backref = 'user', lazy = 'dynamic')
+    id_for_modification = db.relationship('modifyApplication', backref = 'user', lazy = 'dynamic')
     id_for_contact = db.relationship('Table_Contact', backref = 'user', lazy = 'dynamic')
     
     @property
@@ -39,9 +40,9 @@ class Table_ShiftArrangement(db.Model):
     checkInState = db.Column(db.String(10), default = 'None')
     checkOut = db.Column(db.DateTime, nullable = True)
     checkOutState = db.Column(db.String(10), default = 'None')
-    uid = db.Column(db.Integer, db.ForeignKey('Table_UserData.id'))
-    did = db.Column(db.Integer, db.ForeignKey('Table_Duty.id'))
-    modification = db.relationship('Table_ModifyApplication', backref = 'arrangement', lazy = 'dynamic')
+    uid = db.Column(db.Integer, db.ForeignKey('userData.id'))
+    did = db.Column(db.Integer, db.ForeignKey('duty.id'))
+    modification = db.relationship('modifyApplication', backref = 'arrangement', lazy = 'dynamic')
     def __repr__(self):
         return '<Arrangement %r : %r>' % (self.uID, self.arrangementDate)
 
@@ -54,9 +55,9 @@ class Table_ModifyApplication(db.Model):
     id = db.Column(db.Integer, primary_key = True, unique = True, index = True)
     date = db.Column(db.Date)
     reason = db.Column(db.String)
-    uid = db.Column(db.Integer, db.ForeignKey('Table_UserData.id'))
-    aid = db.Column(db.Integer, db.ForeignKey('Table_ShiftArrangement.id'))
-    did = db.Column(db.Integer, db.ForeignKey('Table_Duty.id'))
+    uid = db.Column(db.Integer, db.ForeignKey('userData.id'))
+    aid = db.Column(db.Integer, db.ForeignKey('shiftArrangement.id'))
+    did = db.Column(db.Integer, db.ForeignKey('duty.id'))
     def __repr__(self):
         return '<Modification %r : %r - %r>' % (self.uID, self.modifyDate, self.modifyPeriod)
 
@@ -76,16 +77,17 @@ class Table_Duty(db.Model):
     period = db.Column(db.String)
     content = db.Column(db.String)
     explanation = db.Column(db.Text)
-    modification = db.relationship('Table_ModifyApplication', backref = 'duty', lazy = 'dynamic')
-    arrangement = db.relationship('Table_ShiftArrangement', backref = 'duty', lazy = 'dynamic')
+    modification = db.relationship('modifyApplication', backref = 'duty', lazy = 'dynamic')
+    arrangement = db.relationship('shiftArrangement', backref = 'duty', lazy = 'dynamic')
     def __repr__(self):
         return '<Duty %r - %r: %r>' % (self.dutyID, self.dutyPeriod, self.dutyContent)
 
 class Table_Contact(db.Model):
     __tablename__ = 'contact'
+    id = db.Column(db.Integer, primary_key = True, unique = True, index = True)
     date = db.Column(db.Date)
     email = db.Column(db.String)
     content = db.Column(db.Text)
-    uid = db.Column(db.Integer, db.ForeignKey('Table_UserData.id'))
+    uid = db.Column(db.Integer, db.ForeignKey('userData.id'))
     def __repr__(self):
         return '<Contact %r [%r]' % (self.contactDate, self.contactEmail)
