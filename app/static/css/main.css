@@ -146,3 +146,8 @@ td.past-month {
 .dot-danger {
     background-color: #DC3545;
 }
+
+.stick-bottom {
+    position: absolute;
+    bottom: 0;
+}
