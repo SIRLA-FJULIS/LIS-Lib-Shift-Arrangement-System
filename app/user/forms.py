@@ -10,5 +10,4 @@ class ContactForm(FlaskForm):
     submit = SubmitField("送出")
 
 class ReserveForm(FlaskForm):
-    period = SelectField("時段", choices=[(1, '時段一'), (2, '時段二'), (3, '時段三'), (4, '時段四'), (5, '時段五')], validators = [DataRequired()])
-    submit = SubmitField("送出")
+    period = SelectField("時段", choices=[(1, '時段一'), (2, '時段二'), (3, '時段三'), (4, '時段四'), (5, '時段五')], validators=[DataRequired()], coerce=int)

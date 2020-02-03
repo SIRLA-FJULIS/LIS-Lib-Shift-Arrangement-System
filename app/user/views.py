@@ -20,7 +20,6 @@ def book():
     if form.validate_on_submit():
         period = form.period.data
         form.period.data = ''
-        print(peroid)
     return render_template('user/book.html', year=year, cal=cal_list, form=form)
 
 @bp.route('/contact', methods = ['GET', 'POST'])
