@@ -8,42 +8,52 @@
 {% block content %}
     <div id="cal" class="carousel mx-auto" data-ride="carousel" data-interval="false">
         <div class="carousel-inner">
-            {% for month in cal %}
-                {% set current_month = loop.index %}
-                <div class="carousel-item{% if loop.index == 1 %} active{% endif %}">
-                    <div class="calendar-top mb-4 d-flex justify-content-between">
-                        <h3>{{ year }} {{ ['一月', '二月', '三月', '四月',
-                                '五月', '六月', '七月', '八月',
-                                '九月', '十月', '十一月', '十二月'][loop.index0] }}
-                        </h3>
-                        <h3>預約輪值</h3>
-                        <div class="btn-group">
-                            <button class="btn btn-primary" onclick="$('.carousel').carousel('prev');">
-                                    <span class="oi oi-chevron-left"></span>
-                            </button>
-                            <button class="btn btn-primary" onclick="$('.carousel').carousel('next');">
-                                <span class="oi oi-chevron-right"></span>
-                            </button>
+            {% for year in cal %}
+                {% set current_year = today_year + loop.index0 %}
+                {% for month in year %}
+                    {% set current_month = loop.index %}
+                    <div class="carousel-item {% if loop.index == 1 and current_year == today_year %}active{% endif %}">
+                        <div class="calendar-top mb-4 d-flex justify-content-between">
+                            <h3>{{ current_year }} {{ ['一月', '二月', '三月', '四月',
+                                    '五月', '六月', '七月', '八月',
+                                    '九月', '十月', '十一月', '十二月'][loop.index0] }}
+                            </h3>
+                            <h3>預約輪值</h3>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" onclick="$('.carousel').carousel('prev');">
+                                        <span class="oi oi-chevron-left"></span>
+                                </button>
+                                <button class="btn btn-primary" onclick="$('.carousel').carousel('next');">
+                                    <span class="oi oi-chevron-right"></span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <table class="calendar table-bordered">
-                        {% for week in month %}
-                        <tr>
-                            {% for date in week %}                 
-                                {% if date.month == current_month %}
-                                <td class="current-month">
-                                {% else %}
-                                <td class="past-month">
-                                {% endif %}
-                                    <a href="#" class="reserve-link" data-month="{{date.month}}" data-day="{{date.day}}">
-                                        {{ date.day }}
-                                    </a>
-                                </td>
+                        <table class="calendar table-bordered">
+                            {% for week in month %}
+                            <tr>
+                                {% for date in week %}                 
+                                    {% if date.month == current_month %}
+                                    <td class="current-month">
+                                    {% else %}
+                                    <td class="past-month">
+                                    {% endif %}
+                                        <a href="#" class="reserve-link" data-month="{{date.month}}" data-day="{{date.day}}">
+                                            {{ date.day }}
+                                            <div class="reserve-status">
+                                                <span class="dot dot-success"></span>
+                                                <span class="dot dot-danger"></span>
+                                                <span class="dot dot-success"></span>
+                                                <span class="dot dot-danger"></span>
+                                                <span class="dot dot-danger"></span>
+                                            </div>
+                                        </a>
+                                    </td>
+                                {% endfor %}
+                            </tr>
                             {% endfor %}
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+                        </table>
+                    </div>
+                {% endfor %}
             {% endfor %}
         </div>
     </div>

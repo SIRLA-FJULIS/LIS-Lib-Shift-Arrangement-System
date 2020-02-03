@@ -15,12 +15,12 @@ def book():
     period = None
     cal = Calendar(0)
     year = date.today().year
-    cal_list = [cal.monthdatescalendar(year, i+1) for i in range(12)]
+    cal_list = [[cal.monthdatescalendar(year+j, i+1) for i in range(12)] for j in range(2)]
     form = ReserveForm()
     if form.validate_on_submit():
         period = form.period.data
         form.period.data = ''
-    return render_template('user/book.html', year=year, cal=cal_list, form=form)
+    return render_template('user/book.html', today_year=year, cal=cal_list, form=form)
 
 @bp.route('/contact', methods = ['GET', 'POST'])
 def contact():

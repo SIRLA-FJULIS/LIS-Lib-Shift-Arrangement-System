@@ -126,3 +126,23 @@ td.past-month {
     color: inherit;
     border: solid 2px #007BFF;
 }
+
+.reserve-status {
+    margin-top: 15px;
+}
+
+.dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 2px;
+    border-radius: 100%;
+}
+
+.dot-success {
+    background-color: #28A745;
+}
+
+.dot-danger {
+    background-color: #DC3545;
+}
