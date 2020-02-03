@@ -13,8 +13,8 @@ class Table_UserData(UserMixin, db.Model):
     password = db.Column(db.String(128))
     email = db.Column(db.String, unique = True, index = True)
     role = db.Column(db.String, index = True)
-    id_for_arrangements = db.relationship('shiftArrangement', backref = 'user', lazy = 'dynamic')
-    id_for_modification = db.relationship('modifyApplication', backref = 'user', lazy = 'dynamic')
+    id_for_arrangements = db.relationship('Table_ShiftArrangement', backref = 'user', lazy = 'dynamic')
+    id_for_modification = db.relationship('Table_ModifyApplication', backref = 'user', lazy = 'dynamic')
     id_for_contact = db.relationship('Table_Contact', backref = 'user', lazy = 'dynamic')
     
     @property
@@ -42,7 +42,7 @@ class Table_ShiftArrangement(db.Model):
     checkOutState = db.Column(db.String(10), default = 'None')
     uid = db.Column(db.Integer, db.ForeignKey('userData.id'))
     did = db.Column(db.Integer, db.ForeignKey('duty.id'))
-    modification = db.relationship('modifyApplication', backref = 'arrangement', lazy = 'dynamic')
+    modification = db.relationship('Table_ModifyApplication', backref = 'arrangement', lazy = 'dynamic')
     def __repr__(self):
         return '<Arrangement %r : %r>' % (self.uID, self.arrangementDate)
 
@@ -77,8 +77,8 @@ class Table_Duty(db.Model):
     period = db.Column(db.String)
     content = db.Column(db.String)
     explanation = db.Column(db.Text)
-    modification = db.relationship('modifyApplication', backref = 'duty', lazy = 'dynamic')
-    arrangement = db.relationship('shiftArrangement', backref = 'duty', lazy = 'dynamic')
+    modification = db.relationship('Table_ModifyApplication', backref = 'duty', lazy = 'dynamic')
+    arrangement = db.relationship('Table_ShiftArrangement', backref = 'duty', lazy = 'dynamic')
     def __repr__(self):
         return '<Duty %r - %r: %r>' % (self.dutyID, self.dutyPeriod, self.dutyContent)
 
