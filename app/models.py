@@ -1,15 +1,32 @@
-from . import db
+from . import db, login_manager
+from werkzeug.security import generate_password_hash, check_password_hash
 
-class Table_UserData(db.Model):
+@login_manager.user_loader
+def load_user(user_id):
+    return Table_UserData.query.get(int(user_id))
+
+class Table_UserData(UserMixin, db.Model):
     __tablename__ = 'userData'
     id = db.Column(db.Integer, primary_key = True, unique = True, index = True)
     name = db.Column(db.String(64), index = True)
-    password = db.Column(db.String)
-    email = db.Column(db.String, unique = True)
+    password = db.Column(db.String(128))
+    email = db.Column(db.String, unique = True, index = True)
     role = db.Column(db.String, index = True)
     id_for_arrangements = db.relationship('Table_ShiftArrangement', backref = 'user', lazy = 'dynamic')
     id_for_modification = db.relationship('Table_ModifyApplication', backref = 'user', lazy = 'dynamic')
     id_for_contact = db.relationship('Table_Contact', backref = 'user', lazy = 'dynamic')
+    
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+	
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
     def __repr__(self):
         return '<User %r:%r>' % (self.userID, self.userName)
 
