@@ -4,6 +4,7 @@ from app.user import bp
 from calendar import Calendar
 from datetime import date, datetime
 from app.models import ShiftArrangement
+from app import db
 from collections import defaultdict
 
 @bp.route('/user')
@@ -12,25 +13,25 @@ def dashboard():
 
 @bp.route('/book', methods = ['GET', 'POST'])
 def book():
-    id = None
-    reserve_date = None
-    period = None
     cal = Calendar(0)
-    year = date.today().year
-    cal_list = [[cal.monthdatescalendar(year+j, i+1) for i in range(12)] for j in range(2)]
+    today_year = date.today().year
+    cal_list = [[cal.monthdatescalendar(today_year+j, i+1) for i in range(12)] for j in range(2)]
     arrangements = ShiftArrangement.query.all()
     bookin_list = defaultdict(list)
-
     for arrangement in arrangements:
         bookin_list[str(arrangement.date)].append(arrangement.did)
+    
     form = ReserveForm()
-
     if form.validate_on_submit():
-        reserve_date = form.year.data + "-" + form.month.data + "-" + form.day.data
-        period = form.period.data
+        user_id = 1
+        reserve_date = (int(form.year.data), int(form.month.data), int(form.day.data))
+        duty_id = form.period.data
         form.period.data = ''
+
+        db.session.add(ShiftArrangement(date=datetime(*reserve_date), uid=user_id, did=duty_id))
+        db.session.commit()
         return redirect(url_for('user.book'))
-    return render_template('user/book.html', today_year=year, cal=cal_list, form=form, bookin_list=bookin_list)
+    return render_template('user/book.html', today_year=today_year, cal=cal_list, form=form, bookin_list=bookin_list)
 
 @bp.route('/contact', methods = ['GET', 'POST'])
 def contact():

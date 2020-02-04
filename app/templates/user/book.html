@@ -130,14 +130,15 @@
                 if(value == ""){
                     $('#period option[value=1]').attr('selected', true);
                 } else {
-                    let smallest_possible = 1
-                    for(let i of value.split(" ")) {
+                    booked_list = value.split(" ").map((i)=>parseInt(i)).sort();
+                    let smallest_possible = 1;
+                    for(let i of booked_list) {
                         if(i == smallest_possible) {
-                            smallest_possible += 1;
+                            smallest_possible = i+1;
                         }
                         $('#period option[value=' + i + ']').attr('disabled', 'disabled');
-                        $('#period option[value=' + smallest_possible + ']').attr('selected', true);
                     }
+                    $('#period option[value=' + smallest_possible + ']').attr('selected', true);
                 }
 
                 $("#year").val(year);
@@ -150,14 +151,17 @@
 
         $('#reserveForm').submit(function(event){
             event.preventDefault(event);
-            var year = $(this).data('year');
-            var month = $(this).data('month');
-            var day = $(this).data('day');
+            form_data = $(this).serializeArray();
+            let year = parseInt(form_data[0].value);
+            let month = parseInt(form_data[1].value);
+            let day = parseInt(form_data[2].value);
+            let period = parseInt(form_data[4].value);
             $.ajax({
                 type: 'POST',   
                 url: '/book',
                 data: $('#reserveForm').serialize()
             }).done(function(value) {
+                $(`a[data-year=${year}][data-month=${month}][data-day=${day}] span:nth-child(${period})`).removeClass('dot-success').addClass('dot-danger');
                 $('#reserveModal').modal('hide');
                 $('#okModal').modal('show');
             });
