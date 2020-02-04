@@ -40,11 +40,20 @@
                                         <a href="#" class="reserve-link" data-year="{{date.year}}" data-month="{{date.month}}" data-day="{{date.day}}">
                                             {{ date.day }}
                                             <div class="reserve-status">
-                                                <span class="dot dot-success"></span>
-                                                <span class="dot dot-danger"></span>
-                                                <span class="dot dot-success"></span>
-                                                <span class="dot dot-success"></span>
-                                                <span class="dot dot-danger"></span>
+                                                {% set str_date = date|string %}
+                                                {% if str_date in bookin_list %}
+                                                    {% for i in range(5) %}
+                                                        {% if i+1 in bookin_list[str_date] %}
+                                                            <span class="dot dot-danger"></span>
+                                                        {% else %}
+                                                            <span class="dot dot-success"></span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% for i in range(5) %}
+                                                        <span class="dot dot-success"></span>
+                                                    {% endfor %}
+                                                {% endif %}
                                             </div>
                                         </a>
                                     </td>
@@ -71,11 +80,8 @@
             <div class="modal-body">
                 <form method="POST" id="reserveForm" class="form-group">
                     {{ form.hidden_tag() }}
-                    {{ form.year }}
-                    {{ form.month }}
-                    {{ form.day }}
                     {{ form.period.label }}
-                    {{ form.period(class="form-control", id="peroid") }}
+                    {{ form.period(class="form-control", id="period") }}
                 </form>
             </div>
             <div class="modal-footer">
@@ -113,11 +119,33 @@
             var year = $(this).data('year');
             var month = $(this).data('month');
             var day = $(this).data('day');
-            $("#year").val(year);
-            $("#month").val(month);
-            $("#day").val(day);
-            $('#reserveModal').modal('show'); //顯示編輯畫面
-            $('#reserveModalTitle').text(`${year}年${month}月${day}日`);
+            $.ajax({
+                type: 'GET',
+                url: `/bookin_status?date=${year}-${month}-${day}`
+            }).done(function(value) {
+                for(let i = 1; i <= 5; i++) {
+                    $('#period option[value=' + i + ']').removeAttr('disabled');
+                    $('#period option[value=' + i + ']').removeAttr('selected');
+                }
+                if(value == ""){
+                    $('#period option[value=1]').attr('selected', true);
+                } else {
+                    let smallest_possible = 1
+                    for(let i of value.split(" ")) {
+                        if(i == smallest_possible) {
+                            smallest_possible += 1;
+                        }
+                        $('#period option[value=' + i + ']').attr('disabled', 'disabled');
+                        $('#period option[value=' + smallest_possible + ']').attr('selected', true);
+                    }
+                }
+
+                $("#year").val(year);
+                $("#month").val(month);
+                $("#day").val(day);
+                $('#reserveModal').modal('show');
+                $('#reserveModalTitle').text(`${year}年${month}月${day}日`);
+            });
         });
 
         $('#reserveForm').submit(function(event){
