@@ -103,6 +103,10 @@ td.past-month {
     vertical-align: top;
 }
 
+#cal table td {
+    width: 10px;
+}
+
 #cal h1 {
     background-color: #fff;
     text-align: center;
