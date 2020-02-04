@@ -2,6 +2,7 @@ from flask import render_template, redirect, url_for, session, flash
 from flask_login import login_user
 from app.auth.forms import LoginForm, SingUp, ForgotPasswordForm, ChangePasswordForm
 from app.auth import bp
+from app.models import UserData
 
 @bp.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -10,25 +11,19 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         account = form.account.data
-        user = Table_UserData.query.filter_by(account).first()
+        password = form.password.data
+        user = UserData.query.filter_by(id = account).first()
         form.account.data = ''
-        session['logged_in'] = True
-        if user is not None and user.verify_password(form.password.data):
-            login_user(user)
-            next = request.args.get('next')
-            if next is not None and next.startswith('/'):
-                next = url_for('main.index')
-            return redirect(next)
+        if user is not None and user.verify_password(password):
+            session['logged_in'] = True
+            if user.name == 'admin':
+                session['role'] = 'Admin'
+                return redirect(url_for('admin.dashboard'))
+            else:
+                session['role'] = 'User'
+                return redirect(url_for('user.dashboard'))
         flash('Invalid username or password')
-        """
-        if account == '404040000':
-            session['role'] = 'Admin'
-            return redirect(url_for('admin.dashboard'))
-        else:
-            session['role'] = 'User'
-            return redirect(url_for('user.dashboard'))
-        """
-    return render_template('auth/login.html', form = form, account = account, password = password)
+    return render_template('auth/login.html', form = form)
 
 @bp.route('/signup', methods = ['GET', 'POST'])
 def signup():
