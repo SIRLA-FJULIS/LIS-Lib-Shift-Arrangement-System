@@ -14,8 +14,8 @@ def dashboard():
 @bp.route('/book', methods = ['GET', 'POST'])
 def book():
     cal = Calendar(0)
-    today_year = date.today().year
-    cal_list = [[cal.monthdatescalendar(today_year+j, i+1) for i in range(12)] for j in range(2)]
+    today = date.today()
+    cal_list = [[cal.monthdatescalendar(today.year+j, i+1) for i in range(12)] for j in range(2)]
     arrangements = ShiftArrangement.query.all()
     bookin_list = defaultdict(list)
     for arrangement in arrangements:
@@ -31,7 +31,7 @@ def book():
         db.session.add(ShiftArrangement(date=datetime(*reserve_date), uid=user_id, did=duty_id))
         db.session.commit()
         return redirect(url_for('user.book'))
-    return render_template('user/book.html', today_year=today_year, cal=cal_list, form=form, bookin_list=bookin_list)
+    return render_template('user/book.html', today=today, cal=cal_list, form=form, bookin_list=bookin_list)
 
 @bp.route('/contact', methods = ['GET', 'POST'])
 def contact():

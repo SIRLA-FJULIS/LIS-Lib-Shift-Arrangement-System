@@ -9,10 +9,10 @@
     <div id="cal" class="carousel mx-auto" data-ride="carousel" data-interval="false">
         <div class="carousel-inner">
             {% for year in cal %}
-                {% set current_year = today_year + loop.index0 %}
+                {% set current_year = today.year + loop.index0 %}
                 {% for month in year %}
                     {% set current_month = loop.index %}
-                    <div class="carousel-item {% if loop.index == 1 and current_year == today_year %}active{% endif %}">
+                    <div class="carousel-item {% if loop.index == today.month and current_year == today.year %}active{% endif %}">
                         <div class="calendar-top mb-4 d-flex justify-content-between">
                             <h3>{{ current_year }} {{ ['一月', '二月', '三月', '四月',
                                     '五月', '六月', '七月', '八月',
@@ -40,19 +40,21 @@
                                         <a href="#" class="reserve-link" data-year="{{date.year}}" data-month="{{date.month}}" data-day="{{date.day}}">
                                             {{ date.day }}
                                             <div class="reserve-status">
-                                                {% set str_date = date|string %}
-                                                {% if str_date in bookin_list %}
-                                                    {% for i in range(5) %}
-                                                        {% if i+1 in bookin_list[str_date] %}
-                                                            <span class="dot dot-danger"></span>
-                                                        {% else %}
+                                                {% if loop.index <= 5 %}
+                                                    {% set str_date = date|string %}
+                                                    {% if str_date in bookin_list %}
+                                                        {% for i in range(5) %}
+                                                            {% if i+1 in bookin_list[str_date] %}
+                                                                <span class="dot dot-danger"></span>
+                                                            {% else %}
+                                                                <span class="dot dot-success"></span>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        {% for i in range(5) %}
                                                             <span class="dot dot-success"></span>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                {% else %}
-                                                    {% for i in range(5) %}
-                                                        <span class="dot dot-success"></span>
-                                                    {% endfor %}
+                                                        {% endfor %}
+                                                    {% endif %}
                                                 {% endif %}
                                             </div>
                                         </a>
