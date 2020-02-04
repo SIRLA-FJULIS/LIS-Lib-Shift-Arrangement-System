@@ -22,7 +22,9 @@ def login():
             else:
                 session['role'] = 'User'
                 return redirect(url_for('user.dashboard'))
-        flash('Invalid username or password')
+        else:
+            flash('Invalid username or password')
+            return redirect(url_for('auth.login'))
     return render_template('auth/login.html', form = form)
 
 @bp.route('/signup', methods = ['GET', 'POST'])
