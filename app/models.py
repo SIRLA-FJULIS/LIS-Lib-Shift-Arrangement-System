@@ -13,9 +13,9 @@ class UserData(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     email = db.Column(db.String, unique = True, index = True)
     role = db.Column(db.String, index = True)
-    id_for_arrangements = db.relationship('Table_ShiftArrangement', backref = 'user', lazy = 'dynamic')
-    id_for_modification = db.relationship('Table_ModifyApplication', backref = 'user', lazy = 'dynamic')
-    id_for_contact = db.relationship('Table_Contact', backref = 'user', lazy = 'dynamic')
+    id_for_arrangements = db.relationship('ShiftArrangement', backref = 'user', lazy = 'dynamic')
+    id_for_modification = db.relationship('ModifyApplication', backref = 'user', lazy = 'dynamic')
+    id_for_contact = db.relationship('Contact', backref = 'user', lazy = 'dynamic')
     
     @property
     def password(self):
@@ -42,7 +42,7 @@ class ShiftArrangement(db.Model):
     checkOutState = db.Column(db.String(10), default = 'None')
     uid = db.Column(db.Integer, db.ForeignKey('userData.id'))
     did = db.Column(db.Integer, db.ForeignKey('duty.id'))
-    modification = db.relationship('Table_ModifyApplication', backref = 'arrangement', lazy = 'dynamic')
+    modification = db.relationship('ModifyApplication', backref = 'arrangement', lazy = 'dynamic')
     def __repr__(self):
         return '<Arrangement %r : %r>' % (self.uid, self.date)
 
@@ -77,8 +77,8 @@ class Duty(db.Model):
     period = db.Column(db.String)
     content = db.Column(db.String)
     explanation = db.Column(db.Text)
-    modification = db.relationship('Table_ModifyApplication', backref = 'duty', lazy = 'dynamic')
-    arrangement = db.relationship('Table_ShiftArrangement', backref = 'duty', lazy = 'dynamic')
+    modification = db.relationship('ModifyApplication', backref = 'duty', lazy = 'dynamic')
+    arrangement = db.relationship('ShiftArrangement', backref = 'duty', lazy = 'dynamic')
     def __repr__(self):
         return '<Duty %r - %r: %r>' % (self.id, self.period, self.content)
 
