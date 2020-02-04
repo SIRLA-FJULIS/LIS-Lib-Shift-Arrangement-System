@@ -2,6 +2,14 @@
 
 {% block title %}登入介面{% endblock title %}
 {% block content %}
+    <div style="height: 40px;">
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+    </div>
+    {% endfor %}
     <form method="POST">
         <h1 class='page-title mt-5' style="text-align: center;">登入</h1>
         <div class="form-group col-xl-5 col-md-6" style="margin: 15px auto">
@@ -20,3 +28,13 @@
         </div>
     </form>
 {% endblock content %}
+
+{% block custom_script %}
+<script>
+    window.setTimeout(function() {
+        $(".alert").fadeTo(500, 0).slideUp(500, function(){
+            $(this).remove(); 
+        });
+    }, 2000);
+</script>
+{% endblock %}
