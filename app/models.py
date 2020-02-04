@@ -6,11 +6,11 @@ from flask_login import UserMixin
 def load_user(user_id):
     return Table_UserData.query.get(int(user_id))
 
-class Table_UserData(UserMixin, db.Model):
+class UserData(UserMixin, db.Model):
     __tablename__ = 'userData'
     id = db.Column(db.Integer, primary_key = True, unique = True, index = True)
     name = db.Column(db.String(64), index = True)
-    password = db.Column(db.String(128))
+    password_hash = db.Column(db.String(128))
     email = db.Column(db.String, unique = True, index = True)
     role = db.Column(db.String, index = True)
     id_for_arrangements = db.relationship('Table_ShiftArrangement', backref = 'user', lazy = 'dynamic')
@@ -29,10 +29,10 @@ class Table_UserData(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return '<User %r:%r>' % (self.userID, self.userName)
+        return '<User %r:%r>' % (self.id, self.name)
 
 
-class Table_ShiftArrangement(db.Model):
+class ShiftArrangement(db.Model):
     __tablename__ = 'shiftArrangement'
     id = db.Column(db.Integer, primary_key = True, unique = True, index = True)
     date = db.Column(db.Date, index = True)
@@ -44,10 +44,10 @@ class Table_ShiftArrangement(db.Model):
     did = db.Column(db.Integer, db.ForeignKey('duty.id'))
     modification = db.relationship('Table_ModifyApplication', backref = 'arrangement', lazy = 'dynamic')
     def __repr__(self):
-        return '<Arrangement %r : %r>' % (self.uID, self.arrangementDate)
+        return '<Arrangement %r : %r>' % (self.uid, self.date)
 
 
-class Table_ModifyApplication(db.Model):
+class ModifyApplication(db.Model):
     """
     Apply to modify the shift arrangement.
     """
@@ -59,19 +59,19 @@ class Table_ModifyApplication(db.Model):
     aid = db.Column(db.Integer, db.ForeignKey('shiftArrangement.id'))
     did = db.Column(db.Integer, db.ForeignKey('duty.id'))
     def __repr__(self):
-        return '<Modification %r : %r - %r>' % (self.uID, self.modifyDate, self.modifyPeriod)
+        return '<Modification %r : %r - %r>' % (self.uid, self.date, self.period)
 
 
-class Table_News(db.Model):
+class News(db.Model):
     __tablename__ = 'news'
     id = db.Column(db.Integer, primary_key = True, unique = True, index = True)
     title = db.Column(db.String)
     dateTime = db.Column(db.DateTime)
     content = db.Column(db.Text)
     def __repr__(self):
-        return '<News %r [%r]>' % (self.newsTitle, self.newsDateTime)
+        return '<News %r [%r]>' % (self.title, self.dateTime)
 
-class Table_Duty(db.Model):
+class Duty(db.Model):
     __tablename__ = 'duty'
     id = db.Column(db.Integer, primary_key = True, unique = True, index = True)
     period = db.Column(db.String)
@@ -80,9 +80,9 @@ class Table_Duty(db.Model):
     modification = db.relationship('Table_ModifyApplication', backref = 'duty', lazy = 'dynamic')
     arrangement = db.relationship('Table_ShiftArrangement', backref = 'duty', lazy = 'dynamic')
     def __repr__(self):
-        return '<Duty %r - %r: %r>' % (self.dutyID, self.dutyPeriod, self.dutyContent)
+        return '<Duty %r - %r: %r>' % (self.id, self.period, self.content)
 
-class Table_Contact(db.Model):
+class Contact(db.Model):
     __tablename__ = 'contact'
     id = db.Column(db.Integer, primary_key = True, unique = True, index = True)
     date = db.Column(db.Date)
@@ -90,4 +90,4 @@ class Table_Contact(db.Model):
     content = db.Column(db.Text)
     uid = db.Column(db.Integer, db.ForeignKey('userData.id'))
     def __repr__(self):
-        return '<Contact %r [%r]' % (self.contactDate, self.contactEmail)
+        return '<Contact %r [%r]' % (self.date, self.email)
