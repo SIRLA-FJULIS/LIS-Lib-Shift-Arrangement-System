@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request, session
+from flask import render_template, redirect, url_for, request, session, abort
 from app.user.forms import ContactForm, ReserveForm
 from app.user import bp
 from calendar import Calendar
@@ -28,8 +28,13 @@ def book():
         duty_id = form.period.data
         form.period.data = ''
 
-        db.session.add(ShiftArrangement(date=datetime(*reserve_date), uid=user_id, did=duty_id))
-        db.session.commit()
+        exist_arrangements = ShiftArrangement.query.filter_by(date=date(*reserve_date)).all()
+        if (exist_arrangements is None) or \
+           (exist_arrangements is not None and duty_id not in [arr.did for arr in exist_arrangements]):
+            db.session.add(ShiftArrangement(date=datetime(*reserve_date), uid=user_id, did=duty_id))
+            db.session.commit()
+        else:
+            abort(500)
         return redirect(url_for('user.book'))
     return render_template('user/book.html', today=today, cal=cal_list, form=form, bookin_list=bookin_list)
 
