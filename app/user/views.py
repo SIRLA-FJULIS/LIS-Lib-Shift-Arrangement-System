@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, session
 from app.user.forms import ContactForm, ReserveForm
 from app.user import bp
 from calendar import Calendar
@@ -23,7 +23,7 @@ def book():
     
     form = ReserveForm()
     if form.validate_on_submit():
-        user_id = 1
+        user_id = session['user_id']
         reserve_date = (int(form.year.data), int(form.month.data), int(form.day.data))
         duty_id = form.period.data
         form.period.data = ''
