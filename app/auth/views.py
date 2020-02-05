@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, session, flash
 from flask_login import login_user
-from app.auth.forms import LoginForm, SingUp, ForgotPasswordForm, ChangePasswordForm
+from app.auth.forms import LoginForm, ForgotPasswordForm, ChangePasswordForm
 from app.auth import bp
 from app.models import UserData
 
@@ -28,20 +28,6 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('auth.login'))
     return render_template('auth/login.html', form = form)
-
-@bp.route('/signup', methods = ['GET', 'POST'])
-def signup():
-    form = SingUp()
-    if form.validate_on_submit():
-        account = form.account.data
-        form.name.data = ''
-
-        name = form.name.data
-        form.name.data = ''
-
-        email = form.email.data
-        form.email.data = ''
-    return render_template("auth/sign_up.html", form = form)
 
 @bp.route('/forgotpassword', methods = ['GET', 'POST'])
 def forgotpassword():

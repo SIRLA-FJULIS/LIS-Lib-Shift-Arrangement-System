@@ -8,13 +8,6 @@ class LoginForm(FlaskForm):
     password = PasswordField("密碼")
     submit = SubmitField("送出")
 
-class SingUp(FlaskForm):
-    account = StringField("學號", validators = [DataRequired()])
-    name = StringField("姓名", validators = [DataRequired()])
-    email = EmailField("電子信箱", validators = [DataRequired(), Email()])
-    password = PasswordField("密碼")
-    submit = SubmitField("送出")
-
 class ForgotPasswordForm(FlaskForm):
     account = StringField("學號", validators = [DataRequired()])
     email = EmailField("電子信箱", validators = [DataRequired(), Email()])
