@@ -37,27 +37,29 @@
                                     {% else %}
                                     <td class="past-month">
                                     {% endif %}
+                                        {% if loop.index <= 5 %}
                                         <a href="#" class="reserve-link" data-year="{{date.year}}" data-month="{{date.month}}" data-day="{{date.day}}">
+                                        {% endif %}    
                                             {{ date.day }}
+                                        {% if loop.index <= 5 %}
                                             <div class="reserve-status">
-                                                {% if loop.index <= 5 %}
-                                                    {% set str_date = date|string %}
-                                                    {% if str_date in bookin_list %}
-                                                        {% for i in range(5) %}
-                                                            {% if i+1 in bookin_list[str_date] %}
-                                                                <span class="dot dot-danger"></span>
-                                                            {% else %}
-                                                                <span class="dot dot-success"></span>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    {% else %}
-                                                        {% for i in range(5) %}
+                                                {% set str_date = date|string %}
+                                                {% if str_date in bookin_list %}
+                                                    {% for i in range(5) %}
+                                                        {% if i+1 in bookin_list[str_date] %}
+                                                            <span class="dot dot-danger"></span>
+                                                        {% else %}
                                                             <span class="dot dot-success"></span>
-                                                        {% endfor %}
-                                                    {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% for i in range(5) %}
+                                                        <span class="dot dot-success"></span>
+                                                    {% endfor %}
                                                 {% endif %}
                                             </div>
                                         </a>
+                                        {% endif %}
                                     </td>
                                 {% endfor %}
                             </tr>
