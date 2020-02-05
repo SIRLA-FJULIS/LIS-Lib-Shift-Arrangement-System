@@ -21,11 +21,11 @@
         <ul class="navbar-nav">
             <li class="dropdown">
                 <a class="nav-link dropdown-toggle text-light pl-0" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    土豆
+                    {{ session['username'] }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="{{ url_for('user.dashboard') }}"><h5 class="font-weight-bolder mb-0">土豆</h5></a></li>
-                    <li><a class="dropdown-item small" href="{{ url_for('user.dashboard') }}">404040236</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('user.dashboard') }}"><h5 class="font-weight-bolder mb-0">{{ session['username'] }}</h5></a></li>
+                    <li><a class="dropdown-item small" href="{{ url_for('user.dashboard') }}">{{ session['user_id'] }}</a></li>
                     <div class="dropdown-divider"></div>
                     <li><a class="dropdown-item" href="{{ url_for('user.dashboard') }}">個人頁面</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('user.book') }}">預約輪值</a></li>

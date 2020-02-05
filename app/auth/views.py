@@ -16,7 +16,9 @@ def login():
         form.account.data = ''
         if user is not None and user.verify_password(password):
             session['logged_in'] = True
-            if user.name == 'admin':
+            session['username'] = user.name
+            session['user_id'] = user.id
+            if user.role == 'admin':
                 session['role'] = 'Admin'
                 return redirect(url_for('admin.dashboard'))
             else:
