@@ -151,6 +151,8 @@
                 url: `/bookin_status?date=${year}-${month}-${day}`
             }).done(function(value) {
                 for(let i = 1; i <= 5; i++) {
+                    $('#period').prop('disabled', false);
+                    $('#submitReserve').prop('disabled', false);
                     $('#period option[value=' + i + ']').removeAttr('disabled');
                     $('#period option[value=' + i + ']').removeAttr('selected');
                 }
@@ -164,6 +166,10 @@
                             smallest_possible = i+1;
                         }
                         $('#period option[value=' + i + ']').attr('disabled', 'disabled');
+                    }
+                    if(smallest_possible > 5) {
+                        $('#period').prop('disabled', true);
+                        $('#submitReserve').prop('disabled', true);
                     }
                     $('#period option[value=' + smallest_possible + ']').attr('selected', true);
                 }
