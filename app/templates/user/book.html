@@ -138,6 +138,26 @@
         </div>
         </div>
     </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="errorModalTitle">錯誤</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <p>出現錯誤，請重新嘗試</p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            </div>
+        </div>
+        </div>
+    </div>
 {% endblock content %}
 
 {% block custom_script %}
@@ -197,6 +217,9 @@
                 $(`a[data-year=${year}][data-month=${month}][data-day=${day}] span:nth-child(${period})`).removeClass('dot-success').addClass('dot-danger');
                 $('#reserveModal').modal('hide');
                 $('#okModal').modal('show');
+            }).fail(function(data) {
+                $('#reserveModal').modal('hide');
+                $('#errorModal').modal('show');
             });
         });
     </script>

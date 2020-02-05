@@ -11,6 +11,13 @@ from collections import defaultdict
 def dashboard():
     return render_template('user/dashboard.html')
 
+def is_period_duplicate(reserve_date, duty_id):
+    exist_arrangements = ShiftArrangement.query.filter_by(date=date(*reserve_date)).all()
+    if exist_arrangements is not None and duty_id in [arr.did for arr in exist_arrangements]:
+        return True
+    else:
+        return False
+
 @bp.route('/book', methods = ['GET', 'POST'])
 def book():
     cal = Calendar(0)
@@ -29,13 +36,13 @@ def book():
         form.period.data = ''
 
         exist_arrangements = ShiftArrangement.query.filter_by(date=date(*reserve_date)).all()
-        if (exist_arrangements is None) or \
-           (exist_arrangements is not None and duty_id not in [arr.did for arr in exist_arrangements]):
+
+        if not is_period_duplicate(reserve_date, duty_id):
             db.session.add(ShiftArrangement(date=datetime(*reserve_date), uid=user_id, did=duty_id))
             db.session.commit()
         else:
             abort(500)
-        return redirect(url_for('user.book'))
+
     return render_template('user/book.html', today=today, cal=cal_list, form=form, bookin_list=bookin_list)
 
 @bp.route('/contact', methods = ['GET', 'POST'])
