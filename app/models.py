@@ -4,7 +4,7 @@ from flask_login import UserMixin
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Table_UserData.query.get(int(user_id))
+    return UserData.query.get(int(user_id))
 
 class UserData(UserMixin, db.Model):
     __tablename__ = 'userData'
