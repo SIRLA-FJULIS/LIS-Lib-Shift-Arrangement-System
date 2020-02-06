@@ -2,8 +2,8 @@ from flask import render_template, redirect, url_for, request, session, abort
 from app.user.forms import ContactForm, ReserveForm
 from app.user import bp
 from calendar import Calendar
-from datetime import date, datetime
-from app.models import ShiftArrangement
+from datetime import date, datetime, timedelta
+from app.models import ShiftArrangement, Semester
 from app import db
 from collections import defaultdict
 
@@ -28,6 +28,14 @@ def book():
     for arrangement in arrangements:
         bookin_list[str(arrangement.date)].append(arrangement.did)
     
+    semester = Semester.query.order_by(Semester.id.desc()).first()
+    delta =  semester.end_date - semester.start_date
+    avaliable = []
+    for i in range(delta.days + 1):
+        day = semester.start_date + timedelta(days=i)
+        if day.weekday() <= 4:
+            avaliable.append(day)
+
     form = ReserveForm()
     if form.validate_on_submit():
         user_id = session['user_id']
@@ -43,7 +51,7 @@ def book():
         else:
             abort(500)
 
-    return render_template('user/book.html', today=today, cal=cal_list, form=form, bookin_list=bookin_list)
+    return render_template('user/book.html', today=today, cal=cal_list, form=form, bookin_list=bookin_list, avaliable=avaliable)
 
 @bp.route('/contact', methods = ['GET', 'POST'])
 def contact():
