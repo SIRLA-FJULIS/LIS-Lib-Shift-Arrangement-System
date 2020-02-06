@@ -91,3 +91,12 @@ class Contact(db.Model):
     uid = db.Column(db.Integer, db.ForeignKey('userData.id'))
     def __repr__(self):
         return '<Contact %r [%r]' % (self.date, self.email)
+
+class Semester(db.Model):
+    __tablename__ = 'semester'
+    id = db.Column(db.Integer, primary_key=True, unique=True, index=True)
+    name = db.Column(db.String)
+    start_date = db.Column(db.Date, index = True)
+    end_date = db.Column(db.Date, index = True)
+    def __repr__(self):
+        return '<Semester %r: %r - %r>' % (self.name, self.start_date, self.end_date)
