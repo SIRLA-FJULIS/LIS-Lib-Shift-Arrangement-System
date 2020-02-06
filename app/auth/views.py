@@ -23,7 +23,7 @@ def login():
             login_user(user)
             next = request.args.get('next')
             
-            if user.role == 'admin':
+            if user.role_ref == 1:
                 session['role'] = 'Admin'
                 next = url_for('admin.dashboard')
             else:
