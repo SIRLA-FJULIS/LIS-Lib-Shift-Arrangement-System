@@ -60,11 +60,11 @@
                                     {% else %}
                                     <td class="past-month">
                                     {% endif %}
-                                        {% if loop.index <= 5 %}
+                                        {% if date in avaliable_date %}
                                         <a href="#" class="reserve-link" data-year="{{date.year}}" data-month="{{date.month}}" data-day="{{date.day}}">
                                         {% endif %}    
                                             {{ date.day }}
-                                        {% if loop.index <= 5 %}
+                                        {% if date in avaliable_date %}
                                             <div class="reserve-status">
                                                 {% set str_date = date|string %}
                                                 {% if str_date in bookin_list %}
