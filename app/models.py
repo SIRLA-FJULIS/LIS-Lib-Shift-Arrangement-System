@@ -76,7 +76,7 @@ class UserData(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def can(self, perm):
-        return self.role_ref is not None and self.role_ref.has_permission(perm)
+        return self.role_ref is not None and Role.query.filter_by(id=self.role_ref).first().has_permission(perm)
 
     def is_administrator(self):
         return self.can(Permission.ADMIN)
