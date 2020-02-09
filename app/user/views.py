@@ -6,7 +6,7 @@ from datetime import date, datetime, timedelta
 from app.models import ShiftArrangement, Semester
 from app import db
 from collections import defaultdict
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 @bp.route('/user')
 @login_required
@@ -33,28 +33,25 @@ def book():
     
     semester = Semester.query.order_by(Semester.id.desc()).first()
     delta =  semester.end_date - semester.start_date
-    avaliable = []
+    avaliable_date = []
     for i in range(delta.days + 1):
         day = semester.start_date + timedelta(days=i)
         if day.weekday() <= 4:
-            avaliable.append(day)
-
+            avaliable_date.append(day)
     form = ReserveForm()
     if form.validate_on_submit():
-        user_id = session['user_id']
+        user_id = current_user.id
         reserve_date = (int(form.year.data), int(form.month.data), int(form.day.data))
         duty_id = form.period.data
         form.period.data = ''
-
         exist_arrangements = ShiftArrangement.query.filter_by(date=date(*reserve_date)).all()
-
-        if not is_period_duplicate(reserve_date, duty_id):
+        if date(*reserve_date) in avaliable_date and not is_period_duplicate(reserve_date, duty_id):
             db.session.add(ShiftArrangement(date=datetime(*reserve_date), uid=user_id, did=duty_id))
             db.session.commit()
         else:
             abort(500)
 
-    return render_template('user/book.html', today=today, cal=cal_list, form=form, bookin_list=bookin_list, avaliable=avaliable)
+    return render_template('user/book.html', today=today, cal=cal_list, form=form, bookin_list=bookin_list, avaliable_date=avaliable_date)
 
 @bp.route('/contact', methods = ['GET', 'POST'])
 def contact():
