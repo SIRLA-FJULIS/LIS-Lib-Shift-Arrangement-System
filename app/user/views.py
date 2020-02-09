@@ -6,8 +6,10 @@ from datetime import date, datetime, timedelta
 from app.models import ShiftArrangement, Semester
 from app import db
 from collections import defaultdict
+from flask_login import login_required
 
 @bp.route('/user')
+@login_required
 def dashboard():
     return render_template('user/dashboard.html')
 
@@ -19,6 +21,7 @@ def is_period_duplicate(reserve_date, duty_id):
         return False
 
 @bp.route('/book', methods = ['GET', 'POST'])
+@login_required
 def book():
     cal = Calendar(0)
     today = date.today()
