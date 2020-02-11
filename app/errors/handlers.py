@@ -1,5 +1,9 @@
-from flask import render_template
+from flask import render_template, jsonify
 from app.errors import errors
+
+@errors.app_errorhandler(400)
+def bad_request(e):
+    return jsonify({'message': e.description['message']}), 400
 
 @errors.app_errorhandler(403)
 def page_not_found(e):
