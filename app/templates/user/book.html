@@ -64,6 +64,9 @@
                                         <a href="#" class="reserve-link" data-year="{{date.year}}" data-month="{{date.month}}" data-day="{{date.day}}">
                                         {% endif %}    
                                             {{ date.day }}
+                                        {% if date in festivals %}
+                                            <span class="festival"> {{ festivals[date] }} </span>
+                                        {% endif %}
                                         {% if date in avaliable_date %}
                                             <div class="reserve-status">
                                                 {% set str_date = date|string %}

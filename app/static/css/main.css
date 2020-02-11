@@ -137,6 +137,11 @@ td.past-month {
     border: solid 2px #007BFF;
 }
 
+.festival {
+    display: block;
+    font-size: 0.85rem;
+}
+
 .reserve-status {
     margin-top: 15px;
 }
