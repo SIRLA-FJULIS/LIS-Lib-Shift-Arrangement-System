@@ -53,13 +53,20 @@ def book():
         duty_id = form.period.data
         form.period.data = ''
         exist_arrangements = ShiftArrangement.query.filter_by(date=date(*reserve_date)).all()
-        if date(*reserve_date) in avaliable_date \
-            and not is_period_duplicate(reserve_date, duty_id) \
-            and not is_arrangement_full(semester.id):
+        if not is_arrangement_full(semester.id) \
+           and not is_period_duplicate(reserve_date, duty_id) \
+           and date(*reserve_date) in avaliable_date:
             db.session.add(ShiftArrangement(date=datetime(*reserve_date), uid=user_id, did=duty_id, semester_id=semester.id))
             db.session.commit()
+        elif is_arrangement_full(semester.id):
+            return abort(400, {'message': '已預約兩次，不需要再預約了喔!'})
+        elif date(*reserve_date) in avaliable_date:
+            return abort(400, {'message': 'Reserve date not in available date'})
+        elif is_period_duplicate(reserve_date, duty_id):
+            return abort(400, {'message': 'Reservation was booked'})
         else:
             abort(500)
+            
 
     return render_template('user/book.html', today=today, cal=cal_list, form=form, bookin_list=bookin_list, avaliable_date=avaliable_date, festivals=unavailable_dates)
 

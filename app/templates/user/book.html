@@ -153,7 +153,7 @@
             </button>
             </div>
             <div class="modal-body">
-                <p>出現錯誤，請重新嘗試</p>
+                <p id="error-message"></p>
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
@@ -216,13 +216,15 @@
                 type: 'POST',   
                 url: '/book',
                 data: $('#reserveForm').serialize()
-            }).done(function(value) {
+            }).done(function(value, status) {
                 $(`a[data-year=${year}][data-month=${month}][data-day=${day}] span:nth-child(${period})`).removeClass('dot-success').addClass('dot-danger');
                 $('#reserveModal').modal('hide');
                 $('#okModal').modal('show');
-            }).fail(function(data) {
+            }).fail(function(error) {
+                console.log(error);
                 $('#reserveModal').modal('hide');
                 $('#errorModal').modal('show');
+                $('#error-message').text(error.responseJSON.message);
             });
         });
     </script>
