@@ -154,7 +154,17 @@ class Semester(db.Model):
     __tablename__ = 'semester'
     id = db.Column(db.Integer, primary_key=True, unique=True, index=True)
     name = db.Column(db.String)
-    start_date = db.Column(db.Date, index = True)
-    end_date = db.Column(db.Date, index = True)
+    start_date = db.Column(db.Date, index=True)
+    end_date = db.Column(db.Date, index=True)
+    unavailableDates = db.relationship('UnavailableDate', backref='semester', lazy='dynamic')
     def __repr__(self):
         return '<Semester %r: %r - %r>' % (self.name, self.start_date, self.end_date)
+
+class UnavailableDate(db.Model):
+    __tablename__ = 'unavailableDate'
+    id = db.Column(db.Integer, primary_key=True, unique=True, index=True)
+    festival_name = db.Column(db.String)
+    date = db.Column(db.Date, index=True)
+    semester_id = db.Column(db.Integer, db.ForeignKey('semester.id'))
+    def __repr__(self):
+        return '<Unavailable Date: %r %r>' % (self.festival_name, self.date)
