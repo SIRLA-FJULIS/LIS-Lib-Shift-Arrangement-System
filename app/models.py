@@ -60,7 +60,7 @@ class UserData(UserMixin, db.Model):
     email = db.Column(db.String, unique = True, index = True)
     
     role_ref = db.Column(db.Integer, db.ForeignKey('role.id'), index = True)
-    arrangements_ref = db.relationship('ShiftArrangement', backref = 'user', lazy = 'dynamic')
+    arrangements = db.relationship('ShiftArrangement', backref = 'user', lazy = 'dynamic')
     modification_ref = db.relationship('ModifyApplication', backref = 'user', lazy = 'dynamic')
     contact_ref = db.relationship('Contact', backref = 'user', lazy = 'dynamic')
     
@@ -101,6 +101,7 @@ class ShiftArrangement(db.Model):
     uid = db.Column(db.Integer, db.ForeignKey('userData.id'))
     did = db.Column(db.Integer, db.ForeignKey('duty.id'))
     modification = db.relationship('ModifyApplication', backref = 'arrangement', lazy = 'dynamic')
+    semester_id = db.Column(db.Integer, db.ForeignKey('semester.id'))
     def __repr__(self):
         return '<Arrangement %r : %r>' % (self.uid, self.date)
 
@@ -157,6 +158,7 @@ class Semester(db.Model):
     start_date = db.Column(db.Date, index=True)
     end_date = db.Column(db.Date, index=True)
     unavailableDates = db.relationship('UnavailableDate', backref='semester', lazy='dynamic')
+    shiftArrangements = db.relationship('ShiftArrangement', backref='semester', lazy='dynamic')
     def __repr__(self):
         return '<Semester %r: %r - %r>' % (self.name, self.start_date, self.end_date)
 
