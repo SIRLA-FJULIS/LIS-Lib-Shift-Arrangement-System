@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import DateField, SubmitField, StringField, TextAreaField, SelectField
+from wtforms.validators import DataRequired
 from datetime import datetime
 
 class CheckInOutForm(FlaskForm):
@@ -18,3 +19,8 @@ class WorkingContentForm(FlaskForm):
 	working_content = StringField("工作內容")
 	description = TextAreaField("工作內容說明")
 	submit = SubmitField("確定")
+
+class ManageDateForm(FlaskForm):
+    festival_name = StringField("節假日名稱", validators=[DataRequired()])
+    date = DateField('日期', format='%Y-%m-%d', validators=[DataRequired()])
+    submit = SubmitField("確定")

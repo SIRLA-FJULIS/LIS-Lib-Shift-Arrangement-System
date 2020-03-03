@@ -1,6 +1,8 @@
-from flask import render_template
-from app.admin.forms import CheckInOutForm, NewsForm, WorkingContentForm
+from flask import render_template, redirect, url_for
+from app.admin.forms import CheckInOutForm, NewsForm, WorkingContentForm, ManageDateForm
 from app.admin import bp
+from app import db
+from app.models import Duty, Semester, UnavailableDate
 from flask_sqlalchemy import SQLAlchemy
 
 @bp.route('/checkinout', methods = ['GET', 'POST'])
@@ -40,3 +42,14 @@ def change_working_content():
     form = WorkingContentForm()
     return render_template('admin/change_working_content.html', form = form)
 
+@bp.route('/manage_date', methods = ['GET', 'POST'])
+def manage_date():
+    form = ManageDateForm()
+    if form.validate_on_submit():
+        current_semester_id = Semester.query.order_by(Semester.id.desc()).first().id
+        db.session.add(UnavailableDate(festival_name=form.festival_name.data, date=form.date.data, semester_id=current_semester_id))
+        db.session.commit()
+        form.festival_name.data = ''
+        form.date.data = ''
+        return redirect(url_for('admin.manage_date'))
+    return render_template('admin/manage_date.html', form = form)
