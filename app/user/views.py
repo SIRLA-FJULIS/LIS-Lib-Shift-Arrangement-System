@@ -3,15 +3,10 @@ from app.user.forms import ContactForm, ReserveForm
 from app.user import bp
 from calendar import Calendar
 from datetime import date, datetime, timedelta
-from app.models import ShiftArrangement, Semester
+from app.models import ShiftArrangement, Semester, UserData, Duty
 from app import db
 from collections import defaultdict
 from flask_login import login_required, current_user
-
-@bp.route('/user')
-@login_required
-def dashboard():
-    return render_template('user/dashboard.html')
 
 # check if period was booked
 def is_period_duplicate(reserve_date, duty_id):
@@ -25,6 +20,56 @@ def is_period_duplicate(reserve_date, duty_id):
 def is_arrangement_full(semester_id):
     arrangements_in_semester = current_user.arrangements.filter_by(semester_id=semester_id).all()
     return len(arrangements_in_semester) >= 2
+
+@bp.route('/user')
+@login_required
+def dashboard():
+    arrangements = UserData.query.filter_by(id=current_user.id).first().arrangements.order_by(ShiftArrangement.date.asc()).all()
+    # 日期(ShiftArrangement)、時間(Duty)、是否已輪值(ShiftArrangement)、工作項目(Duty)、工作說明(Duty)
+    # arrangements_info = {
+    #     'arr1': {
+    #         'date': "",
+    #         'time': "",
+    #         'state': False,
+    #         'work': "",
+    #         'description': ""
+    #     }, 
+    #     'arr2': {
+    #         'date': "",
+    #         'time': "",
+    #         'state': False,
+    #         'work': "",
+    #         'description': ""
+    #     }
+    # }   
+    
+    arrangements_info = []
+    for arrangement in arrangements:
+        arr_info = {}
+        arr_info['date'] = arrangement.date
+        arr_info['period'] = arrangement.duty.period
+        
+        # 判斷state: 尚未預約-NO_BOOKIN、已預約未簽到-RESERVED(簽到為False)、已簽到-DONE(簽到退皆為True)、尚未簽退-NOT_CHECKOUT(簽到為True、簽退為False)
+        if arrangement.isCheckIn == True and arrangement.isCheckOut == True:
+            arr_info['state'] = 'DONE'
+        elif arrangement.isCheckIn == False:
+            arr_info['state'] = 'RESERVED'
+        elif arrangement.isCheckIn == True and arrangement.isCheckOut == False:
+            arr_info['state'] = 'NOT_CHECKOUT'
+        
+        arr_info['content'] = arrangement.duty.content
+        arr_info['explanation'] = arrangement.duty.explanation
+    
+        arrangements_info.append(arr_info)
+    
+    # 如果只有一筆預約就補一筆尚未預約，沒有任何預約的話就補兩筆
+    if len(arrangements_info) == 1:
+        arrangements_info.append({'state': 'NO_BOOKIN'})
+    if len(arrangements_info) == 0:
+        arrangements_info.append({'state': 'NO_BOOKIN'})
+        arrangements_info.append({'state': 'NO_BOOKIN'})
+
+    return render_template('user/dashboard.html', arrangements_info=arrangements_info)
 
 @bp.route('/book', methods = ['GET', 'POST'])
 @login_required

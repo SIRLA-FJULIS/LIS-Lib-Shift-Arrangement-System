@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: f617ca562366
+Revision ID: 55f3d7b0be6e
 Revises: 
-Create Date: 2020-03-23 18:50:09.850892
+Create Date: 2020-03-23 22:49:13.610646
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f617ca562366'
+revision = '55f3d7b0be6e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -90,10 +90,10 @@ def upgrade():
     op.create_table('shiftArrangement',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('date', sa.Date(), nullable=True),
-    sa.Column('checkIn', sa.DateTime(), nullable=True),
-    sa.Column('checkInState', sa.String(length=10), nullable=True),
-    sa.Column('checkOut', sa.DateTime(), nullable=True),
-    sa.Column('checkOutState', sa.String(length=10), nullable=True),
+    sa.Column('checkInTime', sa.DateTime(), nullable=True),
+    sa.Column('isCheckIn', sa.Boolean(), nullable=True),
+    sa.Column('checkOutTime', sa.DateTime(), nullable=True),
+    sa.Column('isCheckOut', sa.Boolean(), nullable=True),
     sa.Column('uid', sa.Integer(), nullable=True),
     sa.Column('did', sa.Integer(), nullable=True),
     sa.Column('semester_id', sa.Integer(), nullable=True),
