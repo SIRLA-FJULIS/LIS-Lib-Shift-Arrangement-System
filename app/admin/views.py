@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for
-from app.admin.forms import CheckInOutForm, NewsForm, WorkingContentForm, ManageDateForm
+from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm
 from app.admin import bp
 from app import db
 from app.models import Duty, Semester, UnavailableDate
@@ -32,15 +32,24 @@ def news():
     form = NewsForm()
     return render_template('admin/news.html', form = form)
 
-@bp.route('/working_content_management', methods = ['GET', 'POST'])
-def working_content_management():
-    form = WorkingContentForm()
-    return render_template('admin/working_content_management.html', form = form)
+@bp.route('/duty_management', methods = ['GET', 'POST'])
+def duty_management():
+    duties = Duty.query.order_by(Duty.id.asc()).all()
+    print(duties)
+    return render_template('admin/duty_management.html', duties=duties)
 
-@bp.route('/change_working_content', methods = ['GET', 'POST'])
-def change_working_content():
-    form = WorkingContentForm()
-    return render_template('admin/change_working_content.html', form = form)
+@bp.route('/edit_duty/<id>', methods = ['GET', 'POST'])
+def edit_duty(id):
+    duty = Duty.query.filter_by(id=id).first()
+    form = DutyForm()
+    if form.validate_on_submit():
+        duty.content = form.content.data
+        duty.explanation = form.explanation.data
+        db.session.commit()
+        return redirect(url_for('admin.duty_management'))
+    form.content.data = duty.content
+    form.explanation.data = duty.explanation
+    return render_template('admin/edit_duty.html', form=form, period=duty.period)
 
 @bp.route('/manage_date', methods = ['GET', 'POST'])
 def manage_date():

@@ -14,10 +14,9 @@ class NewsForm(FlaskForm):
     content = TextAreaField("內容")
     submit = SubmitField("確定")
 
-class WorkingContentForm(FlaskForm):
-	period = SelectField("時段",choices=[('時段1','8:00 ~ 10:00'),('時段2','10:00 ~ 12:00'), ('時段3','12:00 ~ 13:30'), ('時段4','13:30 ~ 15:30'), ('時段4','15:30 ~ 17:30')])
-	working_content = StringField("工作內容")
-	description = TextAreaField("工作內容說明")
+class DutyForm(FlaskForm):
+	content = StringField("工作內容")
+	explanation = TextAreaField("工作內容說明")
 	submit = SubmitField("確定")
 
 class ManageDateForm(FlaskForm):
