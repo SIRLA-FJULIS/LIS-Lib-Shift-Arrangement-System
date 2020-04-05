@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for
 from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm
 from app.admin import bp
 from app import db
-from app.models import Duty, Semester, UnavailableDate
+from app.models import Duty, Semester, UnavailableDate, News
 from flask_sqlalchemy import SQLAlchemy
 
 @bp.route('/checkinout', methods = ['GET', 'POST'])
@@ -14,23 +14,39 @@ def check_in_out():
 def dashboard():
     return render_template('admin/dashboard.html')
 
+@bp.route('/news_management', methods = ['GET', 'POST'])
+def news_management():
+    news = News.query.order_by(News.id.asc()).all()
+    print(news)
+    return render_template('admin/news_management.html', news=news)
+
+@bp.route('/edit_news/<id>', methods = ['GET', 'POST'])
+def edit_news(id):
+    news = News.query.filter_by(id=id).first()
+    form = NewsForm()
+    if form.validate_on_submit():
+        news.title = form.title.data
+        news.post_time = form.post_time.data
+        news.content = form.content.data
+        db.session.commit()
+        return redirect(url_for('admin.news'))
+    form.title.data = news.title
+    form.post_time.data = news.post_time
+    form.content.data = news.content
+    return render_template('admin/edit_news.html', form=form, title=news.title)
+
 @bp.route('/add_news', methods = ['GET', 'POST'])
 def add_news():
     form = NewsForm()
-    title = form.title.data
-    form.title.data = ''
-
-    post_time = form.post_time.data
-    form.post_time.data = ''
-
-    content = form.content.data
-    form.content.data = ''
-    return render_template('admin/add_news.html', form = form, title = title, post_time = post_time, content = content)
-
-@bp.route('/admin_news', methods = ['GET', 'POST'])
-def news():
-    form = NewsForm()
-    return render_template('admin/news.html', form = form)
+    if form.validate_on_submit():
+        title = form.title.data
+        post_time = form.post_time.data
+        content = form.content.data
+        news = News(title=title, post_time=post_time, content=content)
+        db.session.add(news)
+        db.session.commit()
+        return redirect(url_for('admin.add_news'))
+    return render_template('admin/add_news.html', form=form)
 
 @bp.route('/duty_management', methods = ['GET', 'POST'])
 def duty_management():
