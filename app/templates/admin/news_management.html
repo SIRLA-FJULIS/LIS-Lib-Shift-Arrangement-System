@@ -16,8 +16,8 @@
               <tbody>
                 {% for single_news in news %}
                 <tr>
-                  <th scope="row">## 標題 ## {{ single_news.title }}</th>
-                  <td>## 發布時間 ## {{ single_news.post_time }}</td>
+                  <th scope="row">{{ single_news.title }}</th>
+                  <td>{{ single_news.post_time }}</td>
                   <td><button class="btn btn-primary"><a class="text-white" href="{{ url_for('admin.edit_news', id=news.id) }}">修改</a></button></td>
                   <td><button class="btn btn-primary"><a class="text-white" href="{{ url_for('admin.delete_news', id=news.id) }}">刪除</a></button></td>
                 </tr>

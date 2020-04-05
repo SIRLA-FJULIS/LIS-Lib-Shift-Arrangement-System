@@ -18,7 +18,7 @@ def dashboard():
 def news_management():
     news = News.query.order_by(News.id.asc()).all()
     print(news)
-    return render_template('admin/news_management.html', news=news)
+    return render_template('admin/news_management.html', news = news)
 
 @bp.route('/edit_news/<id>', methods = ['GET', 'POST'])
 def edit_news(id):
@@ -33,20 +33,29 @@ def edit_news(id):
     form.title.data = news.title
     form.post_time.data = news.post_time
     form.content.data = news.content
-    return render_template('admin/edit_news.html', form=form, title=news.title)
+    return render_template('admin/edit_news.html', form = form, title = news.title)
+
+@bp.route('/delete_news/<id>', methods = ['GET', 'POST'])
+def delete_news(id):
+    news = News.query.filter_by(id=id).first()
+    form = NewsForm()
+    if form.validate_on_submit():
+        #news.title = form.title.data
+        #news.post_time = form.post_time.data
+        #news.content = form.content.data
+        db.session.delete(news)
+        db.session.commit()
+        return redirect(url_for('admin.news'))
+    return render_template('admin/edit_news.html', form = form)
 
 @bp.route('/add_news', methods = ['GET', 'POST'])
 def add_news():
     form = NewsForm()
     if form.validate_on_submit():
-        title = form.title.data
-        post_time = form.post_time.data
-        content = form.content.data
-        news = News(title=title, post_time=post_time, content=content)
-        db.session.add(news)
+        db.session.add(News(title=form.title.data, content=form.content.data))
         db.session.commit()
         return redirect(url_for('admin.add_news'))
-    return render_template('admin/add_news.html', form=form)
+    return render_template('admin/add_news.html', form = form)
 
 @bp.route('/duty_management', methods = ['GET', 'POST'])
 def duty_management():
