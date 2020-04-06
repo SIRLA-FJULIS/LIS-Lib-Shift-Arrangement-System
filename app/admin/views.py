@@ -18,8 +18,8 @@ def dashboard():
 
 @bp.route('/news_management', methods = ['GET', 'POST'])
 def news_management():
-    news = News.query.order_by(News.id.asc()).all()
-    print(news)
+    news = News.query.order_by(News.id.desc()).all()
+    #print(news)
     return render_template('admin/news_management.html', news = news)
 
 @bp.route('/edit_news/<id>', methods = ['GET', 'POST'])
@@ -28,36 +28,36 @@ def edit_news(id):
     form = NewsForm()
     if form.validate_on_submit():
         news.title = form.title.data
-        news.post_time = form.post_time.data
+        news.postTime = form.post_time.data
         news.content = form.content.data
+        print(news.title)
+        #single_news = News(title=form.title.data, postTime=form.post_time.data, content=form.content.data)
         db.session.commit()
-        return redirect(url_for('admin.news'))
+        return redirect(url_for('admin.news_management'))
     form.title.data = news.title
-    form.post_time.data = news.post_time
+    form.post_time.data = news.postTime
     form.content.data = news.content
-    return render_template('admin/edit_news.html', form = form, title = news.title)
+    return render_template('admin/edit_news.html', form = form, news=news)
 
 @bp.route('/delete_news/<id>', methods = ['GET', 'POST'])
 def delete_news(id):
-    news = News.query.filter_by(id=id).first()
     form = NewsForm()
+    news = News.query.order_by(News.id.desc()).first().id
     if form.validate_on_submit():
+        print(news)
         db.session.delete(news)
         db.session.commit()
-        return redirect(url_for('admin.news'))
-    return render_template('admin/edit_news.html', form = form)
+        return redirect(url_for('admin.news_management'))
+    return render_template('admin/news_management.html', form = form, news = news)
 
 @bp.route('/add_news', methods = ['GET', 'POST'])
 def add_news():
     form = NewsForm()
     #form.post_time.data = datetime.date.today()
     if form.validate_on_submit():
-        print(form.post_time.data)
-        post_time = form.post_time.data
-        post_time = post_time.strftime('%Y-%m-%d')
-        print(post_time)
-        db.session.add(News(title=form.title.data, dateTime=post_time, content=form.content.data))
+        db.session.add(News(title=form.title.data, postTime=form.post_time.data, content=form.content.data))
         db.session.commit()
+        return redirect(url_for('admin.news_management'))
     return render_template('admin/add_news.html', form = form)
 
 @bp.route('/duty_management', methods = ['GET', 'POST'])
