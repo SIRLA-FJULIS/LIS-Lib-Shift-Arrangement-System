@@ -18,7 +18,7 @@ def dashboard():
 
 @bp.route('/news_management', methods = ['GET', 'POST'])
 def news_management():
-    news = News.query.order_by(News.id.desc()).all()
+    news = News.query.order_by(News.postTime.desc()).all()
     #print(news)
     return render_template('admin/news_management.html', news = news)
 
@@ -30,25 +30,22 @@ def edit_news(id):
         news.title = form.title.data
         news.postTime = form.post_time.data
         news.content = form.content.data
-        print(news.title)
-        #single_news = News(title=form.title.data, postTime=form.post_time.data, content=form.content.data)
         db.session.commit()
         return redirect(url_for('admin.news_management'))
     form.title.data = news.title
     form.post_time.data = news.postTime
     form.content.data = news.content
-    return render_template('admin/edit_news.html', form = form, news=news)
+    return render_template('admin/edit_news.html', form = form, news = news)
 
 @bp.route('/delete_news/<id>', methods = ['GET', 'POST'])
 def delete_news(id):
-    form = NewsForm()
-    news = News.query.order_by(News.id.desc()).first().id
-    if form.validate_on_submit():
-        print(news)
-        db.session.delete(news)
+    news_to_delete = News.query.get_or_404(id)
+    try:
+        db.session.delete(news_to_delete)
         db.session.commit()
         return redirect(url_for('admin.news_management'))
-    return render_template('admin/news_management.html', form = form, news = news)
+    except:
+        return render_template('admin/news_management.html')
 
 @bp.route('/add_news', methods = ['GET', 'POST'])
 def add_news():
