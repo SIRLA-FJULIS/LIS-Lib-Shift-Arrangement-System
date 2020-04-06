@@ -5,6 +5,8 @@ from app import db
 from app.models import Duty, Semester, UnavailableDate, News
 from flask_sqlalchemy import SQLAlchemy
 
+import datetime
+
 @bp.route('/checkinout', methods = ['GET', 'POST'])
 def check_in_out():
     form = CheckInOutForm()
@@ -40,9 +42,6 @@ def delete_news(id):
     news = News.query.filter_by(id=id).first()
     form = NewsForm()
     if form.validate_on_submit():
-        #news.title = form.title.data
-        #news.post_time = form.post_time.data
-        #news.content = form.content.data
         db.session.delete(news)
         db.session.commit()
         return redirect(url_for('admin.news'))
@@ -51,10 +50,14 @@ def delete_news(id):
 @bp.route('/add_news', methods = ['GET', 'POST'])
 def add_news():
     form = NewsForm()
+    #form.post_time.data = datetime.date.today()
     if form.validate_on_submit():
-        db.session.add(News(title=form.title.data, content=form.content.data))
+        print(form.post_time.data)
+        post_time = form.post_time.data
+        post_time = post_time.strftime('%Y-%m-%d')
+        print(post_time)
+        db.session.add(News(title=form.title.data, dateTime=post_time, content=form.content.data))
         db.session.commit()
-        return redirect(url_for('admin.add_news'))
     return render_template('admin/add_news.html', form = form)
 
 @bp.route('/duty_management', methods = ['GET', 'POST'])
