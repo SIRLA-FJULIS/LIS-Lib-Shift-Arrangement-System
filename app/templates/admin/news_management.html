@@ -2,19 +2,26 @@
 {% block title %} 最新消息總覽 {% endblock title %}
 {% block content %}
      <form method="POST">
-        <h1 class='page-title mt-5 text-center'>最新消息總覽</h1>
+        <div class="row justify-content-end">
+          <div class="col-3 p-2">
+            <h1 class='page-title text-center'>最新消息總覽</h1>
+          </div>
+          <div class="col-5 p-3 px-md-5">
+            <button class="btn btn-primary"><a class="text-white" href="{{ url_for('admin.add_news') }}">+ 新增</a></button>
+          </div>
+        </div>
         <div class="form-group text-center">
             <table class="table">
               <thead class="thead-dark">
                 <tr>
-                  <th scope="col">標題</th>
-                  <th scope="col">發布時間</th>
-                  <th scope="col">修改</th>
-                  <th scope="col">刪除</th>
+                  <th scope="col md-3">標題</th>
+                  <th scope="col md-3">發布時間</th>
+                  <th scope="col md-3">修改</th>
+                  <th scope="col md-3">刪除</th>
                 </tr>
               </thead>
               <tbody>
-                {% for single_news in news %}
+                {% for single_news in news.items %}
                 <tr>
                   <th scope="row">{{ single_news.title }}</th>
                   <td>{{ single_news.postTime }}</td>
@@ -24,22 +31,50 @@
                 {% endfor %}
               </tbody>
             </table>
-            <div id="Submit" class="mb-4 text-center">
-                <button class="btn btn-primary"><a class="text-white" href="{{ url_for('admin.add_news') }}">+ 新增</a></button>
-            </div>
         </div>
 
-        <nav aria-label="Page navigation example">
+        <!---  分頁功能  --->
+        <nav aria-label="Page navigation" class="post-paginate">
           <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#">Next</a>
-            </li>
+            {% if news.has_prev %}
+              <li class="page-item">
+                <a class="page-link" tabindex="-1" href="{{ url_for('admin.news_management',page=news.prev_num) }}">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#"><span aria-hidden="true">Previous</span></a>
+              </li>
+            {% endif %}
+            
+
+            {% for page in news.iter_pages() %}
+              {% if page %}
+                {% if page != news.page %}
+                  <li class="page-item">
+                    <a class="page-link" tabindex="-1" href="{{ url_for('admin.news_management', page=page) }}">{{ page }}</a>
+                  </li>
+                {% else %}
+                  <li class="page-item">
+                    <a class="page-link" tabindex="-1" href="#">{{ page }}</a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+
+            
+            {% if news.has_next %}
+              <li class="page-item">
+                <a class="page-link" tabindex="-1" href="{{ url_for('admin.news_management', page=news.next_num) }}">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#"><span aria-hidden="true">Next</span></a>
+              </li>
+            {% endif %}
           </ul>
         </nav>
         

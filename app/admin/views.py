@@ -16,9 +16,9 @@ def check_in_out():
 def dashboard():
     return render_template('admin/dashboard.html')
 
-@bp.route('/news_management', methods = ['GET', 'POST'])
-def news_management():
-    news = News.query.order_by(News.postTime.desc()).all()
+@bp.route('/news_management/<int:page>/', methods = ['GET', 'POST'])
+def news_management(page=1):
+    news = News.query.order_by(News.postTime.desc()).paginate(page, 10, False)
     #print(news)
     return render_template('admin/news_management.html', news = news)
 
@@ -31,7 +31,7 @@ def edit_news(id):
         news.postTime = form.post_time.data
         news.content = form.content.data
         db.session.commit()
-        return redirect(url_for('admin.news_management'))
+        return redirect(url_for('admin.news_management', page=1))
     form.title.data = news.title
     form.post_time.data = news.postTime
     form.content.data = news.content
@@ -43,7 +43,7 @@ def delete_news(id):
     try:
         db.session.delete(news_to_delete)
         db.session.commit()
-        return redirect(url_for('admin.news_management'))
+        return redirect(url_for('admin.news_management', page=1))
     except:
         return render_template('admin/news_management.html')
 
@@ -54,7 +54,7 @@ def add_news():
     if form.validate_on_submit():
         db.session.add(News(title=form.title.data, postTime=form.post_time.data, content=form.content.data))
         db.session.commit()
-        return redirect(url_for('admin.news_management'))
+        return redirect(url_for('admin.news_management', page=1))
     return render_template('admin/add_news.html', form = form)
 
 @bp.route('/duty_management', methods = ['GET', 'POST'])
