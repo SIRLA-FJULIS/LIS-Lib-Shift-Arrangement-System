@@ -18,7 +18,7 @@ def dashboard():
 
 @bp.route('/news_management/<int:page>/', methods = ['GET', 'POST'])
 def news_management(page=1):
-    news = News.query.order_by(News.postTime.desc()).paginate(page, 5, False)
+    news = News.query.order_by(News.postTime.desc()).paginate(page, 10, False)
     #print(news)
     return render_template('admin/news_management.html', news = news)
 
