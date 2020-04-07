@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for
-from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm
+from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom
 from app.admin import bp
 from app import db
 from app.models import Duty, Semester, UnavailableDate, News
@@ -87,3 +87,15 @@ def manage_date():
         form.date.data = ''
         return redirect(url_for('admin.manage_date'))
     return render_template('admin/manage_date.html', form = form)
+
+@bp.route('/add_semester', methods = ['GET', 'POST'])
+def add_semester():
+    form = AddSemesterFrom()
+    if form.validate_on_submit():
+        db.session.add(Semester(name=form.name.data, start_date=form.start_date.data, end_date=form.end_date.data))
+        db.session.commit()
+        form.name.data = ''
+        form.start_date.data = ''
+        form.end_date.data = ''
+        return redirect(url_for('admin.add_semester'))
+    return render_template('admin/add_semester.html', form = form)
