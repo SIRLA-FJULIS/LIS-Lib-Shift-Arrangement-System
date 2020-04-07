@@ -22,3 +22,9 @@ class ManageDateForm(FlaskForm):
     festival_name = StringField("節假日名稱", validators=[DataRequired()])
     date = DateField('日期', format='%Y-%m-%d', validators=[DataRequired()])
     submit = SubmitField("確定")
+
+class AddSemesterFrom(FlaskForm):
+    name = StringField("學期名稱")
+    start_date = DateField('輪值開放日期', format='%Y-%m-%d', validators=[DataRequired()])
+    end_date = DateField('輪值結束日期', format='%Y-%m-%d', validators=[DataRequired()])
+    submit = SubmitField("確定")
