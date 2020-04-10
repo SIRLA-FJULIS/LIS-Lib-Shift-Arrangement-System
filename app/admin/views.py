@@ -4,7 +4,7 @@ from app.admin import bp
 from app import db
 from app.models import Duty, Semester, UnavailableDate, News, UserData
 from flask_sqlalchemy import SQLAlchemy
-
+import pandas as pd
 import datetime
 
 @bp.route('/checkinout', methods = ['GET', 'POST'])
@@ -117,10 +117,13 @@ def batch_add_user():
     form = BatchAddUserForm()
     
     if form.validate_on_submit():
-        filename = secure_filename(form.file.data.filename)
-        files = form.file.data
-        form.file.data.save(files)
-        print(files)
-        return filename
+        df = pd.read_excel(form.file.data)# df:dataframe
+        print(df)
+        for i, data in df.iterrows():
+            name = data['姓名']
+            id = data['學號']
+            email = data['email']
+            db.session.add(UserData(id = id, name = str(name), email = email, password = str(id), role_ref = 2))
+            db.session.commit()
     return render_template('admin/batch_add_user.html', form = form)
  
