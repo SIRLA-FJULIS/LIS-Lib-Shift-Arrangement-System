@@ -1,8 +1,8 @@
-from flask import render_template, redirect, url_for
-from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom
+from flask import render_template, redirect, url_for, request
+from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm
 from app.admin import bp
 from app import db
-from app.models import Duty, Semester, UnavailableDate, News
+from app.models import Duty, Semester, UnavailableDate, News, UserData
 from flask_sqlalchemy import SQLAlchemy
 
 import datetime
@@ -99,3 +99,28 @@ def add_semester():
         form.end_date.data = ''
         return redirect(url_for('admin.add_semester'))
     return render_template('admin/add_semester.html', form = form)
+@bp.route('/add_user', methods = ['GET', 'POST'])
+def add_user():
+    form = AddUserForm()
+    if form.validate_on_submit():
+        db.session.add(UserData(id = form.id.data, name = form.name.data, email = form.email.data, password = form.id.data, role_ref = 2))
+        db.session.commit()
+        form.id.data = ''
+        form.name.data = ''
+        form.email.data = ''
+        return redirect(url_for('admin.add_user'))
+        
+    return render_template('admin/add_user.html', form = form)
+
+@bp.route('/batch_add_user', methods = ['GET', 'POST'])
+def batch_add_user():
+    form = BatchAddUserForm()
+    
+    if form.validate_on_submit():
+        filename = secure_filename(form.file.data.filename)
+        files = form.file.data
+        form.file.data.save(files)
+        print(files)
+        return filename
+    return render_template('admin/batch_add_user.html', form = form)
+ 
