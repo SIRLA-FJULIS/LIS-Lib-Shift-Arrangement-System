@@ -125,7 +125,7 @@ class News(db.Model):
     __tablename__ = 'news'
     id = db.Column(db.Integer, primary_key = True, unique = True, index = True)
     title = db.Column(db.String)
-    postTime = db.Column(db.DateTime)
+    dateTime = db.Column(db.DateTime)
     content = db.Column(db.Text)
     def __repr__(self):
         return '<News %r [%r]>' % (self.title, self.postTime)

@@ -24,7 +24,7 @@
                 {% for single_news in news.items %}
                 <tr>
                   <th scope="row">{{ single_news.title }}</th>
-                  <td>{{ single_news.postTime }}</td>
+                  <td>{{ single_news.date_time }}</td>
                   <td><button class="btn btn-primary"><a class="text-white" href="{{ url_for('admin.edit_news', id=single_news.id) }}">修改</a></button></td>
                   <td><button class="btn btn-primary"><a class="text-white" href="{{ url_for('admin.delete_news', id=single_news.id) }}">刪除</a></button></td>
                 </tr>

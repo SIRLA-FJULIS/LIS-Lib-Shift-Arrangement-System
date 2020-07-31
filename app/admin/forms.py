@@ -11,7 +11,7 @@ class CheckInOutForm(FlaskForm):
 
 class NewsForm(FlaskForm):
     title = StringField("標題")
-    post_time = DateField('發布時間', format='%Y-%m-%d', validators=[DataRequired()])
+    date_time = DateField('發布時間', format='%Y-%m-%d', validators=[DataRequired()])
     content = TextAreaField("內容")
     submit = SubmitField("確定")
 
@@ -40,3 +40,4 @@ class AddUserForm(FlaskForm):
 class BatchAddUserForm(FlaskForm):
     file = FileField('添加檔案', validators=[FileRequired(), FileAllowed(['xls', 'xlsx', 'xlsb'], '請上傳excel檔！')])
     submit = SubmitField("上傳")
+    

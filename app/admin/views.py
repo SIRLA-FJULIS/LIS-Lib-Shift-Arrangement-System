@@ -18,7 +18,7 @@ def dashboard():
 
 @bp.route('/news_management/<int:page>/', methods = ['GET', 'POST'])
 def news_management(page=1):
-    news = News.query.order_by(News.postTime.desc()).paginate(page, 10, False)
+    news = News.query.order_by(News.dateTime.desc()).paginate(page, 10, False)
     #print(news)
     return render_template('admin/news_management.html', news = news)
 
@@ -28,12 +28,12 @@ def edit_news(id):
     form = NewsForm()
     if form.validate_on_submit():
         news.title = form.title.data
-        news.postTime = form.post_time.data
+        news.dateTime = form.date_time.data
         news.content = form.content.data
         db.session.commit()
         return redirect(url_for('admin.news_management', page=1))
     form.title.data = news.title
-    form.post_time.data = news.postTime
+    form.date_time.data = news.dateTime
     form.content.data = news.content
     return render_template('admin/edit_news.html', form = form, news = news)
 
@@ -50,9 +50,9 @@ def delete_news(id):
 @bp.route('/add_news', methods = ['GET', 'POST'])
 def add_news():
     form = NewsForm()
-    #form.post_time.data = datetime.date.today()
+    #form.date_time.data = datetime.date.today()
     if form.validate_on_submit():
-        db.session.add(News(title=form.title.data, postTime=form.post_time.data, content=form.content.data))
+        db.session.add(News(title=form.title.data, dateTime=form.date_time.data, content=form.content.data))
         db.session.commit()
         return redirect(url_for('admin.news_management', page=1))
     return render_template('admin/add_news.html', form = form)
