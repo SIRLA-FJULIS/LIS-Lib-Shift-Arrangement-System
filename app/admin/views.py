@@ -126,4 +126,13 @@ def batch_add_user():
             db.session.add(UserData(id = id, name = str(name), email = email, password = str(id), role_ref = 2))
             db.session.commit()
     return render_template('admin/batch_add_user.html', form = form)
- 
+
+@bp.route('/news', methods = ['GET', 'POST'])
+def news(page=1):
+    news = News.query.order_by(News.dateTime.desc()).paginate(page, 10, False)
+    #print(news)
+    return render_template('admin/news.html', news = news)
+
+@bp.route('/news/<id>', methods=['POST', 'GET'])
+def news_detail(id):
+    return '<h1>Hello, you are on the {} page!</h1>'.format(id)

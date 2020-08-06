@@ -11,7 +11,7 @@ class CheckInOutForm(FlaskForm):
 
 class NewsForm(FlaskForm):
     title = StringField("標題")
-    date_time = DateField('發布時間', format='%Y-%m-%d', validators=[DataRequired()])
+    date_time = DateField('發布時間', default=datetime.now)
     content = TextAreaField("內容")
     submit = SubmitField("確定")
 

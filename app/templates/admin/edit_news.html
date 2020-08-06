@@ -9,8 +9,8 @@
             {{ form.title.label}}
             {{ form.title(class="form-control", id="titleField") }}
 
-            {{ form.post_time.label}}
-            {{ form.post_time(class="form-control", type="date", id="dateField") }}
+            {{ form.date_time.label}}
+            {{ form.date_time(class="form-control", type="date", id="dateField") }}
 
             {{ form.content.label}}
             {{ form.content(class="form-control", id="contentField", rows=5) }}
@@ -18,7 +18,7 @@
 
         <div class="mb-4 text-center">
             {{ form.submit(class="btn btn-primary", id="Submit") }}
-            <button class="btn btn-primary"><a href="/news_management" class="text-white" style="text-decoration:none;">返回 最新消息總覽</a></button>
+            <button class="btn btn-primary"><a href="/news_management/1/" class="text-white" style="text-decoration:none;">返回 最新消息總覽</a></button>
         </div>
     </form>
 {% endblock content %}
