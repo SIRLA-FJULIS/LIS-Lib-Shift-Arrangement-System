@@ -3,7 +3,7 @@ from app.user.forms import ContactForm, ReserveForm
 from app.user import bp
 from calendar import Calendar
 from datetime import date, datetime, timedelta
-from app.models import ShiftArrangement, Semester, UserData, Duty
+from app.models import ShiftArrangement, Semester, UserData, Duty, News
 from app import db
 from collections import defaultdict
 from flask_login import login_required, current_user
@@ -127,3 +127,14 @@ def get_bookin_status():
     arrgements = ShiftArrangement.query.filter_by(date=query_date).all()
     bookin = [str(arr.did) for arr in arrgements]
     return " ".join(bookin)
+
+@bp.route('/news', methods = ['GET', 'POST'])
+def news(page=1):
+    news = News.query.order_by(News.dateTime.desc()).paginate(page, 10, False)
+    #print(news)
+    return render_template('user/news.html', news = news)
+
+@bp.route('/news/<id>', methods=['POST', 'GET'])
+def news_detail(id):
+    news_content = News.query.filter_by(id=id).first()
+    return render_template('user/news_content.html', news_content = news_content)
