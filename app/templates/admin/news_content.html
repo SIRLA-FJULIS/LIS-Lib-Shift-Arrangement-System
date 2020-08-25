@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}
+
+	{{news_content.title}}
+	
+{% endblock %}
+
+{% block content %}
+
+
+	<button class="btn btn-primary"><a class="text-white" href="../news">回上頁</a></button>
+	<div class="form-group col-xl-5 col-md-6 mt-5 mx-auto text-center" >
+	    <p scope="row">{{ news_content.title}}</p>
+	    <p scope="row">{{ news_content.dateTime}}</p>
+	    <p scope="row">{{ news_content.content}}</p>
+   	</div>
+   	{% if news_content.id != 1 %}
+   		<button class="btn btn-primary"><a class="text-white" href="/news/{{news_content.id-1}}">上一則</a></button>
+   	{% endif %}
+   	{% if news_content.id == 1 %} 
+   		<button class="btn btn-primary"><a class="text-white" href="/news/{{news_content.id+1}}">下一則</a></button>
+   	{% endif %}
+
+
+{% endblock %}

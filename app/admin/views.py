@@ -135,4 +135,5 @@ def news(page=1):
 
 @bp.route('/news/<id>', methods=['POST', 'GET'])
 def news_detail(id):
-    return '<h1>Hello, you are on the {} page!</h1>'.format(id)
+    news_content = News.query.filter_by(id=id).first()
+    return render_template('admin/news_content.html', news_content = news_content)
