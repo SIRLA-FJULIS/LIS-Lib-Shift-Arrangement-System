@@ -10,14 +10,14 @@
 	<h1 class='page-title mt-5 text-center'>{{ news_content.title}}</h1>
 	
 	<div class="form-group col-xl-5 col-md-6 mt-5 mx-auto text-center" >
-		<table border: 1px solid black;>
+		<table>
 			<tr>
-				<td style="padding: 5px; border: 1px solid black; ">發布時間</td>
-				<td style="padding: 10px; border: 1px solid black;">{{ (news_content.dateTime | string)[:16] }}</td>
+				<td style="width:300px; height:40px; padding: 20px; border: 1px solid black; valign=top;">發布時間</td>
+				<td style="width:800px; height:40px; padding: 20px; border: 1px solid black;">{{ (news_content.dateTime | string)[:16] }}</td>
 			</tr>
 			<tr>
-				<td style="padding: 20px; border: 1px solid black;">內容</td>
-				<td style="padding: 30px; border: 1px solid black;">{{ news_content.content}}</td>
+				<td style="padding: 20px; height:300px;border: 1px solid black;">內容</td>
+				<td style="padding: 30px; height:300px;border: 1px solid black; vertical-align:text-top; text-align:left;">{{ news_content.content}}</td>
 			</tr>
 
 		</table>
