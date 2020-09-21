@@ -9,12 +9,20 @@ from collections import defaultdict
 from flask_login import login_required, current_user
 
 # check if period was booked
-def is_period_duplicate(reserve_date, duty_id):
+def is_period_available(reserve_date, duty_id):
     exist_arrangements = ShiftArrangement.query.filter_by(date=date(*reserve_date)).all()
-    if exist_arrangements is not None and duty_id in [arr.did for arr in exist_arrangements]:
+    if exist_arrangements is not None and [arr.did for arr in exist_arrangements].count(duty_id) <= 1:
         return True
     else:
         return False
+
+def is_same_period(user, reserve_date, duty_id):
+    user_arrangements = user.arrangements.all()
+    for user_arrangement in user_arrangements:
+        if user_arrangement.date == date(*reserve_date) and user_arrangement.did == duty_id:
+            return True
+    
+    return False
 
 # check if the user was already book tow arrangement in the semester
 def is_arrangement_full(semester_id):
@@ -85,11 +93,11 @@ def book():
     semester = Semester.query.order_by(Semester.id.desc()).first()
     unavailable_dates = {unavailable_date.date: unavailable_date.festival_name for unavailable_date in semester.unavailableDates.all()}
     delta =  semester.end_date - semester.start_date
-    avaliable_date = []
+    available_date = []
     for i in range(delta.days + 1):
         day = semester.start_date + timedelta(days=i)
         if day.weekday() <= 4 and day not in unavailable_dates:
-            avaliable_date.append(day)
+            available_date.append(day)
     
     form = ReserveForm()
     if form.validate_on_submit():
@@ -99,21 +107,28 @@ def book():
         form.period.data = ''
         exist_arrangements = ShiftArrangement.query.filter_by(date=date(*reserve_date)).all()
         if not is_arrangement_full(semester.id) \
-           and not is_period_duplicate(reserve_date, duty_id) \
-           and date(*reserve_date) in avaliable_date:
+           and is_period_available(reserve_date, duty_id) \
+           and not is_same_period(current_user, reserve_date, duty_id) \
+           and date(*reserve_date) in available_date:
             db.session.add(ShiftArrangement(date=datetime(*reserve_date), uid=user_id, did=duty_id, semester_id=semester.id))
             db.session.commit()
+            if is_period_available(reserve_date, duty_id):
+                return "period available"
+            else:
+                return "period not available"
         elif is_arrangement_full(semester.id):
-            return abort(400, {'message': '已預約兩次，不需要再預約了喔!'})
-        elif date(*reserve_date) in avaliable_date:
+            return abort(400, {'message': '本學期已預約兩次，不需要再預約了喔!'})
+        elif is_same_period(current_user, reserve_date, duty_id):
+            return abort(400, {'message': '您已經預約過該時段'})
+        elif date(*reserve_date) not in available_date:
             return abort(400, {'message': 'Reserve date not in available date'})
-        elif is_period_duplicate(reserve_date, duty_id):
-            return abort(400, {'message': 'Reservation was booked'})
+        elif not is_period_available(reserve_date, duty_id):
+            return abort(400, {'message': 'Reserve period not available'})
         else:
             abort(500)
             
 
-    return render_template('user/book.html', today=today, cal=cal_list, form=form, bookin_list=bookin_list, avaliable_date=avaliable_date, festivals=unavailable_dates)
+    return render_template('user/book.html', today=today, cal=cal_list, form=form, bookin_list=bookin_list, available_date=available_date, festivals=unavailable_dates)
 
 @bp.route('/contact', methods = ['GET', 'POST'])
 def contact():

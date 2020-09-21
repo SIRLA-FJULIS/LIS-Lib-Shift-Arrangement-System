@@ -54,26 +54,28 @@
                             </tr>
                             {% for week in month %}
                             <tr>
-                                {% for date in week %}                 
+                                {% for date in week %}                
                                     {% if date.month == current_month %}
                                     <td class="current-month">
                                     {% else %}
                                     <td class="past-month">
                                     {% endif %}
-                                        {% if date in avaliable_date %}
+                                        {% if date in available_date %}
                                         <a href="#" class="reserve-link" data-year="{{date.year}}" data-month="{{date.month}}" data-day="{{date.day}}">
                                         {% endif %}    
                                             {{ date.day }}
                                         {% if date in festivals %}
                                             <span class="festival"> {{ festivals[date] }} </span>
                                         {% endif %}
-                                        {% if date in avaliable_date %}
+                                        {% if date in available_date %}
                                             <div class="reserve-status">
                                                 {% set str_date = date|string %}
                                                 {% if str_date in bookin_list %}
                                                     {% for i in range(5) %}
-                                                        {% if i+1 in bookin_list[str_date] %}
+                                                        {% if bookin_list[str_date]|select("equalto", i+1)|list|length >= 2 %}
                                                             <span class="dot dot-danger"></span>
+                                                        {% elif bookin_list[str_date]|select("equalto", i+1)|list|length == 1 %}
+                                                            <span class="dot dot-half"></span>
                                                         {% else %}
                                                             <span class="dot dot-success"></span>
                                                         {% endif %}
@@ -183,8 +185,14 @@
                     $('#period option[value=1]').attr('selected', true);
                 } else {
                     booked_list = value.split(" ").map((i)=>parseInt(i)).sort();
+                    not_available_list = [];
+                    booked_list.forEach(function(book) {
+                        if(booked_list.filter(x => x==book).length >= 2 && !not_available_list.includes(book)) {
+                            not_available_list.push(book);
+                        }
+                    });
                     let smallest_possible = 1;
-                    for(let i of booked_list) {
+                    for(let i of not_available_list) {
                         if(i == smallest_possible) {
                             smallest_possible = i+1;
                         }
@@ -217,7 +225,13 @@
                 url: '/book',
                 data: $('#reserveForm').serialize()
             }).done(function(value, status) {
-                $(`a[data-year=${year}][data-month=${month}][data-day=${day}] span:nth-child(${period})`).removeClass('dot-success').addClass('dot-danger');
+                console.log(value);
+                if(value == "period available"){
+                    $(`a[data-year=${year}][data-month=${month}][data-day=${day}] span:nth-child(${period})`).removeClass('dot-success').addClass('dot-half');
+                } else {
+                    $(`a[data-year=${year}][data-month=${month}][data-day=${day}] span:nth-child(${period})`).removeClass('dot-half').addClass('dot-danger');
+                }
+                
                 $('#reserveModal').modal('hide');
                 $('#okModal').modal('show');
             }).fail(function(error) {

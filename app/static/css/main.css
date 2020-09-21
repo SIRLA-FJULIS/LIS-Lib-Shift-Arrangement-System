@@ -148,14 +148,18 @@ td.past-month {
 
 .dot {
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
     margin-right: 2px;
     border-radius: 100%;
 }
 
 .dot-success {
     background-color: #28A745;
+}
+
+.dot-half {
+    background: linear-gradient(90deg, #DC3545 50%, #28A745 50%);
 }
 
 .dot-danger {
