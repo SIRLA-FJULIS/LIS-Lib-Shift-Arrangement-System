@@ -31,7 +31,7 @@
                         <a class="dropdown-item dropdown-toggle" href="#">管理</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('admin.add_user') }}">學生資料</a></li>
-                            <li><a class="dropdown-item" href="#" role="button">管理預約</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin.book_management') }}" role="button">管理預約</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('admin.news_management', page=1) }}">最新消息</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('admin.duty_management') }}">工作內容</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('admin.manage_date') }}">新增假期</a></li>
