@@ -139,8 +139,8 @@ def contact():
 def get_bookin_status():
     year, month, day = request.args.get('date').split('-')
     query_date = f'{year.zfill(4)}-{month.zfill(2)}-{day.zfill(2)}'
-    arrgements = ShiftArrangement.query.filter_by(date=query_date).all()
-    bookin = [str(arr.did) for arr in arrgements]
+    arrangements = ShiftArrangement.query.filter_by(date=query_date).all()
+    bookin = [str(arr.did) for arr in arrangements]
     return " ".join(bookin)
 
 @bp.route('/news', methods = ['GET', 'POST'])

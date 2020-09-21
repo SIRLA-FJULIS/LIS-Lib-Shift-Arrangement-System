@@ -2,10 +2,15 @@ from flask import render_template, redirect, url_for, request
 from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm
 from app.admin import bp
 from app import db
-from app.models import Duty, Semester, UnavailableDate, News, UserData
+from app.models import Duty, Semester, UnavailableDate, News, UserData, ShiftArrangement
 from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
-import datetime
+from calendar import Calendar
+from datetime import date, datetime, timedelta
+from ..decorators import admin_required
+from flask_login import current_user, login_required
+from collections import defaultdict
+import json
 
 @bp.route('/checkinout', methods = ['GET', 'POST'])
 def check_in_out():
@@ -137,3 +142,58 @@ def news(page=1):
 def news_detail(id):
     news_content = News.query.filter_by(id=id).first()
     return render_template('admin/news_content.html', news_content = news_content)
+
+@bp.route('/book_management', methods = ['GET', 'POST'])
+@login_required
+@admin_required
+def book_management():
+    cal = Calendar(0)
+    today = date.today()
+    cal_list = [[cal.monthdatescalendar(today.year+j, i+1) for i in range(12)] for j in range(2)]
+    arrangements = ShiftArrangement.query.all()
+    
+    bookin_list = defaultdict(list)
+    for arrangement in arrangements:
+        bookin_list[str(arrangement.date)].append(arrangement.did)
+    
+    duties = Duty.query.all()
+
+    semester = Semester.query.order_by(Semester.id.desc()).first()
+    unavailable_dates = {unavailable_date.date: unavailable_date.festival_name for unavailable_date in semester.unavailableDates.all()}
+    delta = semester.end_date - semester.start_date
+    available_date = []
+    for i in range(delta.days + 1):
+        day = semester.start_date + timedelta(days=i)
+        if day.weekday() <= 4 and day not in unavailable_dates:
+            available_date.append(day)
+            
+    return render_template('admin/book_management.html', today=today, cal=cal_list, bookin_list=bookin_list, available_date=available_date, festivals=unavailable_dates, duties=duties)
+
+@bp.route('/bookin_detail', methods = ['GET'])
+@login_required
+@admin_required
+def get_bookin_detail():
+    year, month, day = request.args.get('date').split('-')
+    query_date = f'{year.zfill(4)}-{month.zfill(2)}-{day.zfill(2)}'
+    arrangements = ShiftArrangement.query.filter_by(date=query_date).all()
+
+    bookin_detail = []
+    for arrangement in arrangements:
+        bookin_detail.append({
+            "duty_id": arrangement.duty.id,
+            "student_id": arrangement.user.id,
+            "student_name": arrangement.user.name,
+            "arrangement_id": arrangement.id
+        })
+    
+    return json.dumps(bookin_detail, ensure_ascii=False)
+
+@bp.route('/delete_arrangement', methods = ['GET'])
+@login_required
+@admin_required
+def delete_arrangement():
+    arrangement_id = request.args.get('id')
+    ShiftArrangement.query.filter_by(id=arrangement_id).delete()
+    db.session.commit()
+
+    return redirect(url_for('admin.book_management'))

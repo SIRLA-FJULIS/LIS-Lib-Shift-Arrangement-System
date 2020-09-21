@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %} 管理預約 {% endblock title %}
+
+{% block head %}
+    {{ super() }}
+{% endblock head %}
+
+{% block content %}
+    <div id="cal" class="carousel mx-auto" data-ride="carousel" data-interval="false">
+        <div class="carousel-inner">
+            {% for year in cal %}
+                {% set current_year = today.year + loop.index0 %}
+                {% for month in year %}
+                    {% set current_month = loop.index %}
+                    <div class="carousel-item {% if loop.index == today.month and current_year == today.year %}active{% endif %}">
+                        <div class="calendar-top mb-4 d-flex justify-content-between">
+                            <h3>{{ current_year }} {{ ['一月', '二月', '三月', '四月',
+                                    '五月', '六月', '七月', '八月',
+                                    '九月', '十月', '十一月', '十二月'][loop.index0] }}
+                            </h3>
+                            <h3>管理預約</h3>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" onclick="$('.carousel').carousel('prev');">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="btn btn-primary" onclick="$('.carousel').carousel('next');">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <table class="calendar table-bordered">
+                            <tr>
+                                <td class="week text-center">
+                                    星期一
+                                </td>
+                                <td class="week text-center">
+                                    星期二
+                                </td>
+                                <td class="week text-center">
+                                    星期三
+                                </td>
+                                <td class="week text-center">
+                                    星期四
+                                </td>
+                                <td class="week text-center">
+                                    星期五
+                                </td>
+                                <td class="week text-center">
+                                    星期六
+                                </td>
+                                <td class="week text-center">
+                                    星期日
+                                </td>
+                            </tr>
+                            {% for week in month %}
+                            <tr>
+                                {% for date in week %}                
+                                    {% if date.month == current_month %}
+                                    <td class="current-month">
+                                    {% else %}
+                                    <td class="past-month">
+                                    {% endif %}
+                                        {% if date in available_date %}
+                                        <a href="#" class="reserve-link" data-year="{{date.year}}" data-month="{{date.month}}" data-day="{{date.day}}">
+                                        {% endif %}    
+                                            {{ date.day }}
+                                        {% if date in festivals %}
+                                            <span class="festival"> {{ festivals[date] }} </span>
+                                        {% endif %}
+                                        {% if date in available_date %}
+                                            <div class="reserve-status">
+                                                {% set str_date = date|string %}
+                                                {% if str_date in bookin_list %}
+                                                    {% for i in range(5) %}
+                                                        {% if bookin_list[str_date]|select("equalto", i+1)|list|length >= 2 %}
+                                                            <span class="dot dot-danger"></span>
+                                                        {% elif bookin_list[str_date]|select("equalto", i+1)|list|length == 1 %}
+                                                            <span class="dot dot-half"></span>
+                                                        {% else %}
+                                                            <span class="dot dot-success"></span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% for i in range(5) %}
+                                                        <span class="dot dot-success"></span>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Manage Modal -->
+    <div class="modal fade" id="manageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="manageModalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body pb-0">
+                    <table class="table mb-0">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">時段</th>
+                                <th scope="col">學號</th>
+                                <th scope="col">名字</th>
+                                <th scope="col">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for duty in duties %}
+                            <tr style="height: 49px;">
+                                <th scope="row" rowspan="2" class="align-middle">{{ duty.period }}</th>
+                                <td id="studentId{{duty.id}}-1"></td>
+                                <td id="studentName{{duty.id}}-1"></td>
+                                <td id="operations{{duty.id}}-1"></td>
+                            </tr>
+                            <tr style="height: 49px;">
+                                <td id="studentId{{duty.id}}-2"></td>
+                                <td id="studentName{{duty.id}}-2"></td>
+                                <td id="operations{{duty.id}}-2"></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block custom_script %}
+    <script>
+        $('#cal').on('click', '.reserve-link', function(){
+            var year = $(this).data('year');
+            var month = $(this).data('month');
+            var day = $(this).data('day');
+            $.ajax({
+                type: 'GET',
+                url: `/bookin_detail?date=${year}-${month}-${day}`
+            }).done(function(value) {
+                for(let i=1; i<=5; i++) {
+                    $(`#studentId${i}-1`).empty();
+                    $(`#studentName${i}-1`).empty();
+                    $(`#operations${i}-1`).empty();
+                    $(`#studentId${i}-2`).empty();
+                    $(`#studentName${i}-2`).empty();
+                    $(`#operations${i}-2`).empty();
+                }
+
+                datas = JSON.parse(value);
+                bookin_details = {};
+                datas.forEach((data) => {
+                    if(data.duty_id in bookin_details){
+                        bookin_details[data.duty_id].push(data);
+                    } else {
+                        bookin_details[data.duty_id] = [data];
+                    }
+                });
+
+                for(var duty_id in bookin_details) {
+                    bookin_details[duty_id].forEach((bookin_detail, i) => {
+                        $(`#studentId${duty_id}-${i+1}`).text(bookin_detail.student_id);
+                        $(`#studentName${duty_id}-${i+1}`).text(bookin_detail.student_name);
+                        $(`#operations${duty_id}-${i+1}`).append(`
+                            <a class="btn btn-danger btn-sm text-white" 
+                                href="{{ url_for('admin.delete_arrangement') }}?id=${bookin_detail.arrangement_id}">
+                                刪除
+                            </a>
+                        `);
+                    });
+                }
+                $('#manageModal').modal('show');
+                $('#manageModalTitle').text(`${year}年${month}月${day}日`);
+            });
+        });
+    </script>
+{% endblock custom_script %}
