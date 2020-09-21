@@ -1,19 +1,64 @@
-{% extends "base.html" %}
-{% block title %} 簽到簽退 {% endblock title %}
-{% block content %}
-     <form method="POST">
-        <h1 class='page-title mt-5 text-center' >簽到簽退</h1>
-        <h6 class='page-title mt-5 text-center' >請輸入學號</h6>
-        <div class="form-group col-xl-5 col-md-6 mt-5 mx-auto text-center" >
-        	{{ form.time.label}}
-        	{{ form.time(class="form-control", id="checkInOutField") }}
-        </div>	
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <link rel="icon" type="image/png" href="../static/../static/images/logo.png" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>簽到簽退</title>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+        <a class="navbar-brand">
+            <img src="../../static/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+            LIS輪值系統
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+    {% if current_user.is_authenticated and current_user.can(1) %}
+        <main class="container">
+            <form method="POST">
+            <h1 class='page-title mt-5 text-center' >簽到簽退</h1>
+            <h5 class='page-title mt-5 text-center' >請輸入學號</h5>
+            <div class="form-group col-xl-5 col-md-6 mt-5 mx-auto text-center" >
+                {{ form.time.label}}
+                {{ form.time(class="form-control", id="checkInOutField") }}
+            </div>  
 
-        <div id="checkInOut" class=" mb-4 text-center">
-        
-            {{ form.submit_in(class="btn btn-primary m-4",id="checkInOut") }}    
-            {{ form.submit_out(class="btn btn-primary m-4",id="checkInOut") }}
+            <div id="checkInOut" class=" mb-4 text-center">
             
-        </div>
-    </form>
-{% endblock content %}
+                {{ form.submit_in_out(class="btn btn-primary m-4",id="checkInOut") }}    
+                
+            </div>
+        </form>
+        </main>
+    {% else %}
+        {% extends "base.html" %}
+        {% block title %} index {% endblock title %}
+        {% block content %}
+            <h1>我是Index</h1>
+                
+        {% endblock content %}
+    {% endif %}
+
+    <footer class="footer bg-secondary text-light">
+        <p class="footer_text text-center py-3 mx-3">
+            &copy 2019 系學會系館股＠輔大圖資. Created by 
+            <a class="sirla_link" href="https://sirla-fjulis.github.io/">
+                <img src="../../static/images/SIRLA_Logo_50X48.png" width="22" height="22" class="align-text-bottom d-inline-block" alt="">SIRLA
+            </a>
+        </p>
+    </footer>
+    {% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    {% endblock script %}
+    {% block custom_script %}
+    {% endblock custom_script %}
+</body>
+</html>

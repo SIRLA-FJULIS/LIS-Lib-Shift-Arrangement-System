@@ -6,8 +6,7 @@ from datetime import datetime
 
 class CheckInOutForm(FlaskForm):
     time = DateField('刷卡時間', format='%Y-%m-%d')
-    submit_in = SubmitField("簽到")
-    submit_out = SubmitField("簽退")
+    submit_in_out = SubmitField("簽到")
 
 class NewsForm(FlaskForm):
     title = StringField("標題")
