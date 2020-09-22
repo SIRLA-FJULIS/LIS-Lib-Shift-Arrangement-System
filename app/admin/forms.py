@@ -5,8 +5,8 @@ from wtforms.validators import DataRequired, Email
 from datetime import datetime
 
 class CheckInOutForm(FlaskForm):
-    time = DateField('刷卡時間', format='%Y-%m-%d')
-    submit_in_out = SubmitField("簽到")
+    student_id = StringField('輸入學號', validators=[DataRequired()])
+    submit_in_out = SubmitField("簽到/退")
 
 class NewsForm(FlaskForm):
     title = StringField("標題")

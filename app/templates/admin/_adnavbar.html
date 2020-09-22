@@ -38,7 +38,7 @@
                             <li><a class="dropdown-item" href="{{ url_for('admin.add_semester') }}">新增學期</a></li>
                         </ul>
                     </li>
-                    <li><a class="dropdown-item" href="#">輪值狀況</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('admin.download') }}">輪值狀況</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('admin.check_in_out') }}">簽到/簽退</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" role="button">登出</a></li>
                 </ul>

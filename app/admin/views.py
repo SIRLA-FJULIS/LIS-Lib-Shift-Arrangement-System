@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, make_response
 from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm
 from app.admin import bp
 from app import db
@@ -10,24 +10,106 @@ from datetime import date, datetime, timedelta
 from ..decorators import admin_required
 from flask_login import current_user, login_required
 from collections import defaultdict
+from io import BytesIO
+import xlsxwriter
 import json
+import datetime
+
+def create_workbook():
+    output = BytesIO()
+    # 創建Excel文件,不保存,直接輸出
+    workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+    # 設置檔名為student_data
+    worksheet = workbook.add_worksheet('student_data')
+    # 標題
+    title = ["學號","姓名","簽到時間1","簽到時間2","輪值次數"]
+    worksheet.write_row('A1', title)
+
+    student = UserData.query.filter_by(role_ref=2).all()
+    count = 0
+    for i in student:
+        output_data = [i.id, i.name,'0','0','0']
+        status = ShiftArrangement.query.filter_by(uid=i.id).all()
+
+        for j in status:
+            if j.isCheckIn == True and j.isCheckOut == True and output_data[4] == 0:
+                output_data[2] = j.checkInTime
+                output_data[4] += 1
+            elif j.isCheckIn == True and j.isCheckOut == True and output_data[4] == 1:
+                output_data[3] = j.checkInTime
+                output_data[4] += 1
+        worksheet.write_row('A' + str(count + 2), output_data)
+        count += 1
+    '''
+    dictList = [{"a":"a1","b":"b1","c":"c1"},{"a":"a2","b":"b2","c":"c2"},{"a":"a3","b":"b3","c":"c3"}]
+    for i in range(len(dictList)):
+        row = [dictList[i]["a"],dictList[i]["b"],dictList[i]["c"]]
+        worksheet.write_row('A' + str(i + 2), row)
+    '''
+
+
+    workbook.close()
+    response = make_response(output.getvalue())
+    output.close()
+    return response
 
 @bp.route('/checkinout', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def check_in_out():
     form = CheckInOutForm()
+    if form.validate_on_submit():
+        student_id = form.student_id.data
+        today = datetime.date.today()
+        time_now = datetime.datetime.now()
+        
+        arrangements = ShiftArrangement.query.filter_by(uid=student_id, date=today).all()
+        
+        for i in arrangements:
+            work_time = Duty.query.filter_by(id=i.did).first()
+            work_time_start = work_time.period.split('~')[0].split(":")
+            work_time_end = work_time.period.split('~')[1].split(":")
+
+            #確定是要哪個時段
+            if int(work_time_end[0]) < time_now.hour and int(work_time_end[1]) + 15 < time_now.minute:
+                continue
+            print(work_time)
+
+            if time_now.hour - int(work_time_start[0]) == 0 and time_now.minute -  int(work_time_start[1]) <= 15 and i.isCheckIn == False:
+                i.checkInTime = time_now
+                i.isCheckIn = True
+                print(i)
+                db.session.commit()
+                break
+                
+            elif time_now.hour - int(work_time_end[0]) == 0 and time_now.minute -  int(work_time_end[1]) <= 15 and i.isCheckIn == True:
+                i.checkOutTimes = time_now
+                i.isCheckOut = True
+                print(i)
+                db.session.commit()
+                break
+                
+
+        print(arrangements)
     return render_template('admin/check_in_out.html', form = form)
 
 @bp.route('/admin_dashboard', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def dashboard():
     return render_template('admin/dashboard.html')
 
 @bp.route('/news_management/<int:page>/', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def news_management(page=1):
     news = News.query.order_by(News.dateTime.desc()).paginate(page, 10, False)
     #print(news)
     return render_template('admin/news_management.html', news = news)
 
 @bp.route('/edit_news/<id>', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def edit_news(id):
     news = News.query.filter_by(id=id).first()
     form = NewsForm()
@@ -43,6 +125,8 @@ def edit_news(id):
     return render_template('admin/edit_news.html', form = form, news = news)
 
 @bp.route('/delete_news/<id>', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def delete_news(id):
     news_to_delete = News.query.get_or_404(id)
     try:
@@ -53,6 +137,8 @@ def delete_news(id):
         return render_template('admin/news_management.html')
 
 @bp.route('/add_news', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def add_news():
     form = NewsForm()
     #form.date_time.data = datetime.date.today()
@@ -63,12 +149,16 @@ def add_news():
     return render_template('admin/add_news.html', form = form)
 
 @bp.route('/duty_management', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def duty_management():
     duties = Duty.query.order_by(Duty.id.asc()).all()
     print(duties)
     return render_template('admin/duty_management.html', duties=duties)
 
 @bp.route('/edit_duty/<id>', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def edit_duty(id):
     duty = Duty.query.filter_by(id=id).first()
     form = DutyForm()
@@ -82,6 +172,8 @@ def edit_duty(id):
     return render_template('admin/edit_duty.html', form=form, period=duty.period)
 
 @bp.route('/manage_date', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def manage_date():
     form = ManageDateForm()
     if form.validate_on_submit():
@@ -94,6 +186,8 @@ def manage_date():
     return render_template('admin/manage_date.html', form = form)
 
 @bp.route('/add_semester', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def add_semester():
     form = AddSemesterFrom()
     if form.validate_on_submit():
@@ -104,7 +198,10 @@ def add_semester():
         form.end_date.data = ''
         return redirect(url_for('admin.add_semester'))
     return render_template('admin/add_semester.html', form = form)
+
 @bp.route('/add_user', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def add_user():
     form = AddUserForm()
     if form.validate_on_submit():
@@ -118,6 +215,8 @@ def add_user():
     return render_template('admin/add_user.html', form = form)
 
 @bp.route('/batch_add_user', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def batch_add_user():
     form = BatchAddUserForm()
     
@@ -133,12 +232,16 @@ def batch_add_user():
     return render_template('admin/batch_add_user.html', form = form)
 
 @bp.route('/news', methods = ['GET', 'POST'])
+@login_required
+@admin_required
 def news(page=1):
     news = News.query.order_by(News.dateTime.desc()).paginate(page, 10, False)
     #print(news)
     return render_template('admin/news.html', news = news)
 
 @bp.route('/news/<id>', methods=['POST', 'GET'])
+@login_required
+@admin_required
 def news_detail(id):
     news_content = News.query.filter_by(id=id).first()
     return render_template('admin/news_content.html', news_content = news_content)
@@ -197,3 +300,11 @@ def delete_arrangement():
     db.session.commit()
 
     return redirect(url_for('admin.book_management'))
+
+@bp.route('/download', methods=['GET'])
+def download():
+    response = create_workbook()
+    response.headers['Content-Type'] = "utf-8"
+    response.headers["Cache-Control"] = "no-cache"
+    response.headers["Content-Disposition"] = "attachment; filename=student_data.xlsx"
+    return response

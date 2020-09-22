@@ -20,31 +20,23 @@
             <span class="navbar-toggler-icon"></span>
         </button>
     </nav>
-    {% if current_user.is_authenticated and current_user.can(1) %}
-        <main class="container">
-            <form method="POST">
-            <h1 class='page-title mt-5 text-center' >簽到簽退</h1>
-            <h5 class='page-title mt-5 text-center' >請輸入學號</h5>
-            <div class="form-group col-xl-5 col-md-6 mt-5 mx-auto text-center" >
-                {{ form.time.label}}
-                {{ form.time(class="form-control", id="checkInOutField") }}
-            </div>  
 
-            <div id="checkInOut" class=" mb-4 text-center">
+    <main class="container">
+        <form method="POST">
+        <h1 class='page-title mt-5 text-center' >簽到簽退</h1>
+        <h5 class='page-title mt-5 text-center' >請輸入學號</h5>
+        <div class="form-group col-xl-5 col-md-6 mt-5 mx-auto text-center" >
+            {{ form.hidden_tag() }}
             
-                {{ form.submit_in_out(class="btn btn-primary m-4",id="checkInOut") }}    
-                
-            </div>
-        </form>
-        </main>
-    {% else %}
-        {% extends "base.html" %}
-        {% block title %} index {% endblock title %}
-        {% block content %}
-            <h1>我是Index</h1>
-                
-        {% endblock content %}
-    {% endif %}
+            {{ form.student_id.label}}
+            {{ form.student_id(class="form-control", id="checkInOutField") }}
+        </div>  
+
+        <div id="checkInOut" class=" mb-4 text-center">
+            {{ form.submit_in_out(class="btn btn-primary m-4",id="checkInOut") }}    
+        </div>
+    </form>
+    </main>
 
     <footer class="footer bg-secondary text-light">
         <p class="footer_text text-center py-3 mx-3">
