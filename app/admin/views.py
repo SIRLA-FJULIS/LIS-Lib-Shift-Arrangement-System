@@ -30,14 +30,16 @@ def create_workbook():
     for i in student:
         output_data = [i.id, i.name,'0','0','0']
         status = ShiftArrangement.query.filter_by(uid=i.id).all()
-
+        
         for j in status:
-            if j.isCheckIn == True and j.isCheckOut == True and output_data[4] == 0:
-                output_data[2] = j.checkInTime
-                output_data[4] += 1
-            elif j.isCheckIn == True and j.isCheckOut == True and output_data[4] == 1:
-                output_data[3] = j.checkInTime
-                output_data[4] += 1
+            print(j.checkInTime)
+            if j.isCheckIn == True and j.isCheckOut == True and output_data[-1] == '0':
+                output_data[2] = str(j.checkInTime)
+                output_data[-1] = '1'
+            elif j.isCheckIn == True and j.isCheckOut == True and output_data[-1] == '1':
+                output_data[3] = str(j.checkInTime)
+                output_data[-1] = '2'
+
         worksheet.write_row('A' + str(count + 2), output_data)
         count += 1
     '''
