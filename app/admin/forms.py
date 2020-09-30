@@ -41,5 +41,5 @@ class BatchAddUserForm(FlaskForm):
     submit = SubmitField("上傳")
     
 class DelUserForm(FlaskForm):
-    id = StringField("學號", validators=[DataRequired()])
+    del_id = StringField("學號", validators=[DataRequired()])
     submit = SubmitField("刪除")

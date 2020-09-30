@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, request, make_response
-from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm
+from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm, DelUserForm
 from app.admin import bp
 from app import db
 from app.models import Duty, Semester, UnavailableDate, News, UserData, ShiftArrangement
@@ -233,16 +233,18 @@ def batch_add_user():
             db.session.commit()
     return render_template('admin/batch_add_user.html', form = form)
 
-bp.route('/del_user', methods = ['GET', 'POST'])
+@bp.route('/del_user', methods = ['GET', 'POST'])
 @login_required
 @admin_required
 def del_user():
     form = DelUserForm()
     if form.validate_on_submit():
+        del_user_data =UserData.query.filter_by(id=form.del_id.data).first()
+        db.session.delete(del_user_data)
+        db.session.commit()
+        form.del_id.data = ''
         
-        return redirect(url_for('admin.del_user'))
-        
-    return render_template('admin/del_user.html', form = form)
+    return render_template('admin/del_user.html', form=form)
 
 @bp.route('/news', methods = ['GET', 'POST'])
 @login_required
