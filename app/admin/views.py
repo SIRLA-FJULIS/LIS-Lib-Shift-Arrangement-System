@@ -239,7 +239,13 @@ def batch_add_user():
 def del_user():
     form = DelUserForm()
     if form.validate_on_submit():
-        del_user_data =UserData.query.filter_by(id=form.del_id.data).first()
+        del_user_data = UserData.query.filter_by(id=form.del_id.data).first()
+        
+        del_check_data = ShiftArrangement.query.filter_by(uid=form.del_id.data).all()
+        for i in del_check_data:
+            print(i)
+            db.session.delete(i)
+        
         db.session.delete(del_user_data)
         db.session.commit()
         form.del_id.data = ''
