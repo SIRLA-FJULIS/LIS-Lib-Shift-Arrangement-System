@@ -1,5 +1,7 @@
+# -*- coding: UTF-8 -*-
 import os
-basedir = os.path.abspath(os.path.dirname(__file__)) # 獲取目前檔案路徑
+
+basedir = os.path.abspath(os.path.dirname(__file__)) # Get current file path
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'llsas'
