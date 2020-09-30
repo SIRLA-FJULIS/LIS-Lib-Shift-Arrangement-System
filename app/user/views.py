@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from flask import render_template, redirect, url_for, request, session, abort
 from app.user.forms import ContactForm, ReserveForm
 from app.user import bp

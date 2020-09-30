@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from flask import render_template, redirect, url_for, session, flash, request
 from flask_login import login_user, login_required, logout_user
 from app.auth.forms import LoginForm, ForgotPasswordForm, ChangePasswordForm

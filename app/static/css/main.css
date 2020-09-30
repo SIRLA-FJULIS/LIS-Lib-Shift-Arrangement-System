@@ -1,16 +1,13 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap');
 
-/* 避免sticky navbar 覆蓋到內容 */
 body {
     padding-top: 70px;
 }
 
 body, input, button, select, textarea{
-    font-family: "Noto Sans TC", "微軟正黑體", "Helvetica Neue", Helvetica, Arial, "微软雅黑", sans-serif;
+    font-family: "Noto Sans TC", "Microsoft JhengHei;", "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", sans-serif;
 }
 
-
-/* 讓footer可以正常出現在下方 */
 body {
     display: flex;
     flex-flow: column;
@@ -27,9 +24,6 @@ main { flex: 1; }
     color: inherit; 
     text-decoration: underline;
 }
-
-/* small triangle of dropdown menu */
-/* 邊框 */
 .dropdown-menu::before {
     border-bottom: 9px solid rgba(0, 0, 0, 0.5);
     border-left: 9px solid rgba(0, 0, 0, 0);
@@ -38,7 +32,7 @@ main { flex: 1; }
     display: inline-block;
     position: absolute;
 }
-/* 本體 */
+
 .dropdown-menu::after {
     border-bottom: 8px solid #FFFFFF;
     border-left: 9px solid rgba(0, 0, 0, 0);
@@ -47,7 +41,7 @@ main { flex: 1; }
     display: inline-block;
     position: absolute;
 }
-/* 正常顯示的位置在右上角 */
+
 @media only screen and (min-width: 768px) {
     .dropdown-menu::before{
         right: 10px;
@@ -58,7 +52,7 @@ main { flex: 1; }
         top: -7px;
     }
 }
-/* collapse之後顯示在左上角 */
+
 @media only screen and (max-width: 768px) {
     .dropdown-menu::before{
         left: 10px;
@@ -79,7 +73,6 @@ main { flex: 1; }
     display: none;
 }
 
-/* 預約表單 */
 td.past-month {
     color: #bbb;
 }

@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from flask import render_template, redirect, url_for, request, make_response
 from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm, DelUserForm
 from app.admin import bp
