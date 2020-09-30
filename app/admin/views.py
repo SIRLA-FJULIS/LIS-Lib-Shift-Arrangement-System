@@ -233,6 +233,17 @@ def batch_add_user():
             db.session.commit()
     return render_template('admin/batch_add_user.html', form = form)
 
+bp.route('/del_user', methods = ['GET', 'POST'])
+@login_required
+@admin_required
+def del_user():
+    form = DelUserForm()
+    if form.validate_on_submit():
+        
+        return redirect(url_for('admin.del_user'))
+        
+    return render_template('admin/del_user.html', form = form)
+
 @bp.route('/news', methods = ['GET', 'POST'])
 @login_required
 @admin_required

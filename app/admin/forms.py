@@ -40,3 +40,6 @@ class BatchAddUserForm(FlaskForm):
     file = FileField('添加檔案', validators=[FileRequired(), FileAllowed(['xls', 'xlsx', 'xlsb'], '請上傳excel檔！')])
     submit = SubmitField("上傳")
     
+class DelUserForm(FlaskForm):
+    id = StringField("學號", validators=[DataRequired()])
+    submit = SubmitField("刪除")
