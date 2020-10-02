@@ -71,8 +71,6 @@ def change_password():
 
             logout_user()
             return redirect(url_for('main.index'))
-            #return render_template("auth/change_password.html", form=form)
-            #return redirect(url_for('logout'))
         else:
             flash('密碼不正確.')
     return render_template("auth/change_password.html", form=form)
