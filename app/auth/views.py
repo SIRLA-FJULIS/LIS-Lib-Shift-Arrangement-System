@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for, session, flash, request
 from flask_login import login_user, login_required, logout_user, current_user
 from app.auth.forms import LoginForm, ForgotPasswordForm, ChangePasswordForm
 from app.auth import bp
+from app import db
 from app.models import UserData
 
 @bp.route('/login', methods = ['GET', 'POST'])
@@ -58,15 +59,18 @@ def change_password():
     form = ChangePasswordForm()
     if form.validate_on_submit():
         if current_user.verify_password(form.password_old.data):
+            
             current_user.password = form.password_new.data
-            db.session.add(current_user)
+            db.session.commit()
+            #db.session.add(current_user)
             flash('密碼修改完成！')
             
             form.password_old.data = ""
             form.password_new.data = ""
             form.password_new_confirm.data = ""
 
-            return redirect(url_for('logout'))
+            logout_user()
+            return redirect(url_for('main.index'))
         else:
             flash('密碼不正確.')
     return render_template("auth/change_password.html", form=form)
