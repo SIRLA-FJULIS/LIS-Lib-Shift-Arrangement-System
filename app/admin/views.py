@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-from flask import render_template, redirect, url_for, request, make_response
+from flask import render_template, redirect, url_for, request, make_response, flash
 from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm, DelUserForm
 from app.admin import bp
 from app import db
@@ -76,24 +76,24 @@ def check_in_out():
             #確定是要哪個時段
             if int(work_time_end[0]) < time_now.hour and int(work_time_end[1]) + 15 < time_now.minute:
                 continue
-            print(work_time)
+            #print(work_time)
 
             if time_now.hour - int(work_time_start[0]) == 0 and time_now.minute -  int(work_time_start[1]) <= 15 and i.isCheckIn == False:
                 i.checkInTime = time_now
                 i.isCheckIn = True
-                print(i)
+                #print(i)
                 db.session.commit()
+                form.student_id.data = ""
+                flash("簽到成功")
                 break
                 
             elif time_now.hour - int(work_time_end[0]) == 0 and time_now.minute -  int(work_time_end[1]) <= 15 and i.isCheckIn == True:
                 i.checkOutTimes = time_now
                 i.isCheckOut = True
-                print(i)
                 db.session.commit()
+                form.student_id.data = ""
+                flash("簽到成功")
                 break
-                
-
-        print(arrangements)
     return render_template('admin/check_in_out.html', form = form)
 
 @bp.route('/admin_dashboard', methods = ['GET', 'POST'])
