@@ -9,10 +9,14 @@ itsdangerous==1.1.0
 Jinja2==2.10.1
 Mako==1.1.1
 MarkupSafe==1.1.1
+numpy==1.19.2
+pandas==1.1.3
 python-dateutil==2.8.1
 python-dotenv==0.10.3
 python-editor==1.0.4
+pytz==2020.1
 six==1.14.0
 SQLAlchemy==1.3.8
 Werkzeug==0.15.6
 WTForms==2.2.1
+XlsxWriter==1.3.6
