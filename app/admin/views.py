@@ -78,21 +78,23 @@ def check_in_out():
                 continue
             #print(work_time)
 
-            if time_now.hour - int(work_time_start[0]) == 0 and time_now.minute -  int(work_time_start[1]) <= 15 and i.isCheckIn == False:
+            if time_now.hour - int(work_time_start[0]) == 0 and time_now.minute -  int(work_time_start[1]) <= 15  and i.isCheckIn == False:
                 i.checkInTime = time_now
                 i.isCheckIn = True
-                #print(i)
                 db.session.commit()
                 form.student_id.data = ""
-                flash("簽到成功")
+                #print("簽到成功")
+                flash('You were successfully sign in')
                 break
-                
+               
             elif time_now.hour - int(work_time_end[0]) == 0 and time_now.minute -  int(work_time_end[1]) <= 15 and i.isCheckIn == True:
-                i.checkOutTimes = time_now
+                i.checkOutTime = time_now
                 i.isCheckOut = True
                 db.session.commit()
                 form.student_id.data = ""
-                flash("簽到成功")
+                #print(time_now)
+                #print("簽退成功")
+                flash("簽退成功")
                 break
     return render_template('admin/check_in_out.html', form = form)
 
