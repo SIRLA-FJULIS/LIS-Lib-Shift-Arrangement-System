@@ -67,7 +67,7 @@ def check_in_out():
         time_now = datetime.datetime.now()
         
         arrangements = ShiftArrangement.query.filter_by(uid=student_id, date=today).all()
-        
+
         for i in arrangements:
             work_time = Duty.query.filter_by(id=i.did).first()
             work_time_start = work_time.period.split('~')[0].split(":")
@@ -84,7 +84,7 @@ def check_in_out():
                 db.session.commit()
                 form.student_id.data = ""
                 #print("簽到成功")
-                flash('You were successfully sign in')
+                flash(student_id + ' 簽到成功')
                 break
                
             elif time_now.hour - int(work_time_end[0]) == 0 and time_now.minute -  int(work_time_end[1]) <= 15 and i.isCheckIn == True:
@@ -94,8 +94,10 @@ def check_in_out():
                 form.student_id.data = ""
                 #print(time_now)
                 #print("簽退成功")
-                flash("簽退成功")
+                flash(student_id + " 簽退成功")
                 break
+            else:
+                flash("簽到/退失敗，請確認是否在時間內或學號是否有誤。")
     return render_template('admin/check_in_out.html', form = form)
 
 @bp.route('/admin_dashboard', methods = ['GET', 'POST'])

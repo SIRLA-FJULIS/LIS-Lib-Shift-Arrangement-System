@@ -12,6 +12,12 @@
     <title>簽到簽退</title>
 </head>
 <body class="bg-light">
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+    {% endfor %}
     <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
         <a class="navbar-brand">
             <img src="../../static/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
