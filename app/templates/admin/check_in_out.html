@@ -13,11 +13,21 @@
 </head>
 <body class="bg-light">
     {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            {{ message }}
-        </div>
+        {% if message != "簽到/退失敗，請確認是否在時間內或學號是否有誤。" %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% else %}
+            <div class="alert alert-danger" >
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endif %}
     {% endfor %}
+
+
+
     <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
         <a class="navbar-brand">
             <img src="../../static/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">

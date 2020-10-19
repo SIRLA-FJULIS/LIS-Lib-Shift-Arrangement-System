@@ -65,7 +65,6 @@ def check_in_out():
         student_id = form.student_id.data
         today = datetime.date.today()
         time_now = datetime.datetime.now()
-        
         arrangements = ShiftArrangement.query.filter_by(uid=student_id, date=today).all()
         for i in arrangements:
             work_time = Duty.query.filter_by(id=i.did).first()
