@@ -2,18 +2,16 @@
 {% extends "base.html" %}
 {% block title %} 假期資料管理 {% endblock title %}
 {% block content %}
-    <form method="POST">
+     <form method="POST">
         <div>
-            <span>新增</span>|<a href="{{ url_for('admin.del_manage_date') }}">刪除</a>
+            <a href="{{ url_for('admin.manage_date') }}">新增</a>|<span>刪除</span>
         </div>
-        <h1 class='page-title mt-5 text-center'>新增假期</h1>
+        <h1 class='page-title mt-5 text-center'>刪除 假期資料</h1>
         <div class="form-group col-xl-5 col-md-6 mt-5 mx-auto text-center" >
             {{ form.hidden_tag() }}
-            {{ form.festival_name.label}}
-            {{ form.festival_name(class="form-control", id="festivalNameField") }}
 
-            {{ form.date.label}}
-            {{ form.date(class="form-control", type="date", id="dateField") }}
+            {{ form.del_manage_date.label }}
+            {{ form.del_manage_date(class="form-control", id="del_idField") }}
         </div>
 
         <div id="Submit" class="mb-4 text-center">

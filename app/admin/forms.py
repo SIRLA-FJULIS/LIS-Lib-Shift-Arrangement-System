@@ -44,3 +44,11 @@ class BatchAddUserForm(FlaskForm):
 class DelUserForm(FlaskForm):
     del_id = StringField("學號", validators=[DataRequired()])
     submit = SubmitField("刪除")
+
+class DelSemesterForm(FlaskForm):
+    del_semester = StringField("學期名稱", validators=[DataRequired()])
+    submit = SubmitField("刪除")
+
+class DelManage_dateForm(FlaskForm):
+    del_manage_date = StringField("假期名稱", validators=[DataRequired()])
+    submit = SubmitField("刪除")

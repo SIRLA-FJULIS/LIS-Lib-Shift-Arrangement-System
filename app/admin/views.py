@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from flask import render_template, redirect, url_for, request, make_response, flash
-from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm, DelUserForm
+from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm, DelUserForm, DelSemesterForm, DelManage_dateForm
 from app.admin import bp
 from app import db
 from app.models import Duty, Semester, UnavailableDate, News, UserData, ShiftArrangement
@@ -43,13 +43,6 @@ def create_workbook():
 
         worksheet.write_row('A' + str(count + 2), output_data)
         count += 1
-    '''
-    dictList = [{"a":"a1","b":"b1","c":"c1"},{"a":"a2","b":"b2","c":"c2"},{"a":"a3","b":"b3","c":"c3"}]
-    for i in range(len(dictList)):
-        row = [dictList[i]["a"],dictList[i]["b"],dictList[i]["c"]]
-        worksheet.write_row('A' + str(i + 2), row)
-    '''
-
 
     workbook.close()
     response = make_response(output.getvalue())
@@ -68,13 +61,17 @@ def check_in_out():
         arrangements = ShiftArrangement.query.filter_by(uid=student_id, date=today).all()
         for i in arrangements:
             work_time = Duty.query.filter_by(id=i.did).first()
-            work_time_start = work_time.period.split('~')[0].split(":")
-            work_time_end = work_time.period.split('~')[1].split(":")
+            work_time_start = work_time.period.split('~')[0].split(":") #開始時間
+            work_time_end = work_time.period.split('~')[1].split(":") #結束時間
 
             #確定是要哪個時段
             if int(work_time_end[0]) < time_now.hour and int(work_time_end[1]) + 15 < time_now.minute:
                 continue
             #print(work_time)
+
+            # 如果此時段已經簽到/退完成
+            if i.isCheckIn == True and i.isCheckOut == True: 
+                continue
 
             if time_now.hour - int(work_time_start[0]) == 0 and time_now.minute -  int(work_time_start[1]) <= 15  and i.isCheckIn == False:
                 i.checkInTime = time_now
@@ -84,7 +81,6 @@ def check_in_out():
                 #print("簽到成功")
                 flash(student_id + ' 簽到成功')
                 return render_template('admin/check_in_out.html', form = form)
-                #break
                
             elif time_now.hour - int(work_time_end[0]) == 0 and time_now.minute -  int(work_time_end[1]) <= 15 and i.isCheckIn == True:
                 i.checkOutTime = time_now
@@ -95,7 +91,6 @@ def check_in_out():
                 #print("簽退成功")
                 flash(student_id + " 簽退成功")
                 return render_template('admin/check_in_out.html', form = form)
-                #break
     
         flash("簽到/退失敗，請確認是否在時間內或學號是否有誤。")
     return render_template('admin/check_in_out.html', form = form)
@@ -328,9 +323,39 @@ def delete_arrangement():
     return redirect(url_for('admin.book_management'))
 
 @bp.route('/download', methods=['GET'])
+@login_required
+@admin_required
 def download():
     response = create_workbook()
     response.headers['Content-Type'] = "utf-8"
     response.headers["Cache-Control"] = "no-cache"
     response.headers["Content-Disposition"] = "attachment; filename=student_data.xlsx"
     return response
+
+@bp.route('/del_semester', methods = ['GET', 'POST'])
+@login_required
+@admin_required
+def del_semester():
+    form = DelSemesterForm()
+
+    if form.validate_on_submit():
+        del_semester_data = Semester.query.filter_by(name=form.del_semester.data).first()       
+        db.session.delete(del_semester_data)
+        db.session.commit()
+        form.del_semester.data = ''
+        
+    return render_template('admin/del_semester.html', form=form)
+
+@bp.route('/del_manage_date', methods = ['GET', 'POST'])
+@login_required
+@admin_required
+def del_manage_date():
+    form = DelManage_dateForm()
+
+    if form.validate_on_submit():
+        del_manage_date = UnavailableDate.query.filter_by(festival_name=form.del_manage_date.data).first()       
+        db.session.delete(del_manage_date)
+        db.session.commit()
+        form.del_manage_date.data = ''
+        
+    return render_template('admin/del_manage_date.html', form=form)
