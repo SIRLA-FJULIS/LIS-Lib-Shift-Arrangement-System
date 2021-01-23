@@ -428,6 +428,5 @@ def CheckInProblem():
         form.student_id.data = ''
         form.date.data = ''
         form.did.data = ''
-        form.semester_name.data = ''
-        
+        form.semester_name.data = ''        
     return render_template('admin/CheckInProblem.html', form=form)
