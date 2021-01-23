@@ -1,0 +1,21 @@
+<meta charset="UTF-8">
+{% extends "base.html" %}
+{% block title %} 學期資料管理 {% endblock title %}
+{% block content %}
+     <form method="POST">
+        <div>
+            <a href="{{ url_for('admin.add_semester') }}">新增</a>|<span>刪除</span>
+        </div>
+        <h1 class='page-title mt-5 text-center'>刪除 學期資料</h1>
+        <div class="form-group col-xl-5 col-md-6 mt-5 mx-auto text-center" >
+            {{ form.hidden_tag() }}
+
+            {{ form.del_semester.label }}
+            {{ form.del_semester(class="form-control", id="del_idField") }}
+        </div>
+
+        <div id="Submit" class="mb-4 text-center">
+            {{ form.submit(class="btn btn-primary", id="Submit") }}
+        </div>
+    </form>
+{% endblock content %}

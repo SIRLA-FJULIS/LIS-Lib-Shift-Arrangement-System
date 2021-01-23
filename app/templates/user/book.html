@@ -1,0 +1,246 @@
+<meta charset="UTF-8">
+{% extends "base.html" %}
+{% block title %} 預約輪值 {% endblock title %}
+
+{% block head %}
+    {{ super() }}
+{% endblock head %}
+
+{% block content %}
+    <div id="cal" class="carousel mx-auto" data-ride="carousel" data-interval="false">
+        <div class="carousel-inner">
+            {% for year in cal %}
+                {% set current_year = today.year + loop.index0 %}
+                {% for month in year %}
+                    {% set current_month = loop.index %}
+                    <div class="carousel-item {% if loop.index == today.month and current_year == today.year %}active{% endif %}">
+                        <div class="calendar-top mb-4 d-flex justify-content-between">
+                            <h3>{{ current_year }} {{ ['一月', '二月', '三月', '四月',
+                                    '五月', '六月', '七月', '八月',
+                                    '九月', '十月', '十一月', '十二月'][loop.index0] }}
+                            </h3>
+                            <h3>預約輪值</h3>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" onclick="$('.carousel').carousel('prev');">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="btn btn-primary" onclick="$('.carousel').carousel('next');">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <table class="calendar table-bordered">
+                            <tr>
+                                <td class="week text-center">
+                                    星期一
+                                </td>
+                                <td class="week text-center">
+                                    星期二
+                                </td>
+                                <td class="week text-center">
+                                    星期三
+                                </td>
+                                <td class="week text-center">
+                                    星期四
+                                </td>
+                                <td class="week text-center">
+                                    星期五
+                                </td>
+                                <td class="week text-center">
+                                    星期六
+                                </td>
+                                <td class="week text-center">
+                                    星期日
+                                </td>
+                            </tr>
+                            {% for week in month %}
+                            <tr>
+                                {% for date in week %}                
+                                    {% if date.month == current_month %}
+                                    <td class="current-month">
+                                    {% else %}
+                                    <td class="past-month">
+                                    {% endif %}
+                                        {% if date in available_date %}
+                                        <a href="#" class="reserve-link" data-year="{{date.year}}" data-month="{{date.month}}" data-day="{{date.day}}">
+                                        {% endif %}    
+                                            {{ date.day }}
+                                        {% if date in festivals %}
+                                            <span class="festival"> {{ festivals[date] }} </span>
+                                        {% endif %}
+                                        {% if date in available_date %}
+                                            <div class="reserve-status">
+                                                {% set str_date = date|string %}
+                                                {% if str_date in bookin_list %}
+                                                    {% for i in range(5) %}
+                                                        {% if bookin_list[str_date]|select("equalto", i+1)|list|length >= 2 %}
+                                                            <span class="dot dot-danger"></span>
+                                                        {% elif bookin_list[str_date]|select("equalto", i+1)|list|length == 1 %}
+                                                            <span class="dot dot-half"></span>
+                                                        {% else %}
+                                                            <span class="dot dot-success"></span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% for i in range(5) %}
+                                                        <span class="dot dot-success"></span>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Reserve Modal -->
+    <div class="modal fade" id="reserveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="reserveModalTitle"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id="reserveForm" class="form-group">
+                    {{ form.hidden_tag() }} 
+                    {{ form.period.label }}
+                    {{ form.period(class="form-control", id="period") }}
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            <button id="submitReserve" type="submit" form="reserveForm" class="btn btn-primary">確認預約</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Ok Modal -->
+    <div class="modal fade" id="okModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="okModalTitle">完成預約</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <p>成功預約!</p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="errorModalTitle">錯誤</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <p id="error-message"></p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block custom_script %}
+    <script>
+        $('#cal').on('click', '.reserve-link', function(){
+            var year = $(this).data('year');
+            var month = $(this).data('month');
+            var day = $(this).data('day');
+            $.ajax({
+                type: 'GET',
+                url: `/bookin_status?date=${year}-${month}-${day}`
+            }).done(function(value) {
+                for(let i = 1; i <= 5; i++) {
+                    $('#period').prop('disabled', false);
+                    $('#submitReserve').prop('disabled', false);
+                    $('#period option[value=' + i + ']').removeAttr('disabled');
+                    $('#period option[value=' + i + ']').removeAttr('selected');
+                }
+                if(value == ""){
+                    $('#period option[value=1]').attr('selected', true);
+                } else {
+                    booked_list = value.split(" ").map((i)=>parseInt(i)).sort();
+                    not_available_list = [];
+                    booked_list.forEach(function(book) {
+                        if(booked_list.filter(x => x==book).length >= 2 && !not_available_list.includes(book)) {
+                            not_available_list.push(book);
+                        }
+                    });
+                    let smallest_possible = 1;
+                    for(let i of not_available_list) {
+                        if(i == smallest_possible) {
+                            smallest_possible = i+1;
+                        }
+                        $('#period option[value=' + i + ']').attr('disabled', 'disabled');
+                    }
+                    if(smallest_possible > 5) {
+                        $('#period').prop('disabled', true);
+                        $('#submitReserve').prop('disabled', true);
+                    }
+                    $('#period option[value=' + smallest_possible + ']').attr('selected', true);
+                }
+
+                $("#year").val(year);
+                $("#month").val(month);
+                $("#day").val(day);
+                $('#reserveModal').modal('show');
+                $('#reserveModalTitle').text(`${year}年${month}月${day}日`);
+            });
+        });
+
+        $('#reserveForm').submit(function(event){
+            event.preventDefault(event);
+            form_data = $(this).serializeArray();
+            let year = parseInt(form_data[0].value);
+            let month = parseInt(form_data[1].value);
+            let day = parseInt(form_data[2].value);
+            let period = parseInt(form_data[4].value);
+            $.ajax({
+                type: 'POST',   
+                url: '/book',
+                data: $('#reserveForm').serialize()
+            }).done(function(value, status) {
+                console.log(value);
+                if(value == "period available"){
+                    $(`a[data-year=${year}][data-month=${month}][data-day=${day}] span:nth-child(${period})`).removeClass('dot-success').addClass('dot-half');
+                } else {
+                    $(`a[data-year=${year}][data-month=${month}][data-day=${day}] span:nth-child(${period})`).removeClass('dot-half').addClass('dot-danger');
+                }
+                
+                $('#reserveModal').modal('hide');
+                $('#okModal').modal('show');
+            }).fail(function(error) {
+                console.log(error);
+                $('#reserveModal').modal('hide');
+                $('#errorModal').modal('show');
+                $('#error-message').text(error.responseJSON.message);
+            });
+        });
+    </script>
+{% endblock custom_script %}

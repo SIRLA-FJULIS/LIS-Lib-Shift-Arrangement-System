@@ -1,0 +1,79 @@
+<meta charset="UTF-8">
+{% extends "base.html" %}
+{% block title %} 最新消息 {% endblock title %}
+{% block content %}
+     <form method="POST">
+        <div class="row justify-content-end">
+          <div class="col-12 p-2">
+            <h1 class='page-title text-center'>最新消息</h1>
+          </div>
+        </div>
+        <div class="form-group text-center">
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col md-3">標題</th>
+                  <th scope="col md-3">內容</th>
+                  <th scope="col md-3">發布時間</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for single_news in news.items %}
+                <tr>
+                  <th scope="row"><a href=/news/{{single_news.id}}>{{ single_news.title }}</a></th>
+                  <td scope="row">{{ single_news.content[:10]}}</td>
+                  <td>{{ (single_news.dateTime | string)[:16] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+
+        <!---  分頁功能  --->
+        <nav aria-label="Page navigation" class="post-paginate">
+          <ul class="pagination justify-content-center">
+            {% if news.has_prev %}
+              <li class="page-item">
+                <a class="page-link" tabindex="-1" href="{{ url_for('admin.news_management',page=news.prev_num) }}">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#"><span aria-hidden="true">Previous</span></a>
+              </li>
+            {% endif %}
+            
+
+            {% for page in news.iter_pages() %}
+              {% if page %}
+                {% if page != news.page %}
+                  <li class="page-item">
+                    <a class="page-link" tabindex="-1" href="{{ url_for('admin.news_management', page=page) }}">{{ page }}</a>
+                  </li>
+                {% else %}
+                  <li class="page-item">
+                    <a class="page-link" tabindex="-1" href="#">{{ page }}</a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+
+            
+            {% if news.has_next %}
+              <li class="page-item">
+                <a class="page-link" tabindex="-1" href="{{ url_for('admin.news_management', page=news.next_num) }}">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#"><span aria-hidden="true">Next</span></a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+        
+        
+    </form>
+{% endblock content %}

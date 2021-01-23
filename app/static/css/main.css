@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap');
+
+body {
+    padding-top: 70px;
+}
+
+body, input, button, select, textarea{
+    font-family: "Noto Sans TC", "Microsoft JhengHei;", "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", sans-serif;
+}
+
+body {
+    display: flex;
+    flex-flow: column;
+    min-height: 100vh;
+}
+
+main { flex: 1; }
+
+.footer_text{
+    font-size: 0.9rem;
+    margin: 0;
+}
+.sirla_link { 
+    color: inherit; 
+    text-decoration: underline;
+}
+.dropdown-menu::before {
+    border-bottom: 9px solid rgba(0, 0, 0, 0.5);
+    border-left: 9px solid rgba(0, 0, 0, 0);
+    border-right: 9px solid rgba(0, 0, 0, 0);
+    content: "";
+    display: inline-block;
+    position: absolute;
+}
+
+.dropdown-menu::after {
+    border-bottom: 8px solid #FFFFFF;
+    border-left: 9px solid rgba(0, 0, 0, 0);
+    border-right: 9px solid rgba(0, 0, 0, 0);
+    content: "";
+    display: inline-block;
+    position: absolute;
+}
+
+@media only screen and (min-width: 768px) {
+    .dropdown-menu::before{
+        right: 10px;
+        top: -8px;
+    }
+    .dropdown-menu::after{
+        right: 10px;
+        top: -7px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .dropdown-menu::before{
+        left: 10px;
+        top: 34px;
+    }
+    .dropdown-menu::after{
+        left: 10px;
+        top: 35px;
+    }
+}
+
+/* navbar dropdown submenu */
+.dropdown-submenu:hover > ul.dropdown-menu {
+    display: block;
+}
+.dropdown-submenu > ul.dropdown-menu::after,
+.dropdown-submenu > ul.dropdown-menu::before {
+    display: none;
+}
+
+td.past-month {
+    color: #bbb;
+}
+
+#cal {
+    max-width: 800px;
+}
+
+.carousel-inner,
+.carousel-item {
+    height: 100%;
+}
+
+#cal table {
+    width: 100%;
+    height: 430px;
+    text-align: right;
+}
+
+#cal table tr {
+    vertical-align: top;
+}
+
+#cal table td {
+    padding: 8px;
+    width: 61px;
+    height: 83px;
+}
+
+#cal table td.week {
+    height: 42px;
+}
+
+#cal h1 {
+    background-color: #fff;
+    text-align: center;
+}
+
+#cal .calendar-top {
+    height: 40px;
+}
+
+.reserve-link {
+    margin: -8px;
+    padding: 8px;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: solid 2px transparent;
+}
+
+.reserve-link:hover {
+    text-decoration: none;
+    color: inherit;
+    border: solid 2px #007BFF;
+}
+
+.festival {
+    display: block;
+    font-size: 0.85rem;
+}
+
+.reserve-status {
+    margin-top: 15px;
+}
+
+.dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 2px;
+    border-radius: 100%;
+}
+
+.dot-success {
+    background-color: #28A745;
+}
+
+.dot-half {
+    background: linear-gradient(90deg, #DC3545 50%, #28A745 50%);
+}
+
+.dot-danger {
+    background-color: #DC3545;
+}
+
+.stick-bottom {
+    position: absolute;
+    bottom: 0;
+}
