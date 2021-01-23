@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from flask import render_template, redirect, url_for, request, make_response, flash
-from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm, DelUserForm, DelSemesterForm, DelManage_dateForm
+from app.admin.forms import CheckInOutForm, NewsForm, DutyForm, ManageDateForm, AddSemesterFrom, AddUserForm, BatchAddUserForm, DelUserForm, DelSemesterForm, DelManage_dateForm, ForgetPasswordForm, DownloadForm, CheckInProblemForm
 from app.admin import bp
 from app import db
 from app.models import Duty, Semester, UnavailableDate, News, UserData, ShiftArrangement
@@ -16,30 +16,56 @@ import xlsxwriter
 import json
 import datetime
 
-def create_workbook():
+# 輸出輪值資料
+def create_workbook(ran, semester_name):
     output = BytesIO()
     # 創建Excel文件,不保存,直接輸出
     workbook = xlsxwriter.Workbook(output, {'in_memory': True})
     # 設置檔名為student_data
     worksheet = workbook.add_worksheet('student_data')
     # 標題
-    title = ["學號","姓名","簽到時間1","簽到時間2","輪值次數"]
+    title = ["學號","姓名","簽到時間1","簽退時間1","簽到時間2","簽退時間2","輪值次數"]
     worksheet.write_row('A1', title)
 
     student = UserData.query.filter_by(role_ref=2).all()
     count = 0
+    semester_status = Semester.query.filter_by(name=semester_name).first()
+
     for i in student:
-        output_data = [i.id, i.name,'0','0','0']
-        status = ShiftArrangement.query.filter_by(uid=i.id).all()
         
+        # 如果不符合屆數，則跳過
+        if (ran != "-1" and str(i.id)[:3] != ran):
+            continue
+        
+        output_data = [i.id, i.name,'0','0','0','0','0']
+        # 此名學生的全部輪值記錄
+        status = ShiftArrangement.query.filter_by(uid=i.id).all()    
+
         for j in status:
-            print(j.checkInTime)
+            # 如果此次輪值紀錄不符合學期別，則跳過
+            if j.semester_id != semester_status.id:
+                continue
+
+            #print(j.checkInTime)
             if j.isCheckIn == True and j.isCheckOut == True and output_data[-1] == '0':
                 output_data[2] = str(j.checkInTime)
+                output_data[3] = str(j.checkOutTime)
                 output_data[-1] = '1'
+
+            # 簽到成功但是簽退失敗
+            elif j.isCheckIn == True and j.isCheckOut == False and output_data[-1] == '0':
+                output_data[4] = str(j.checkInTime)
+                output_data[5] = str(j.checkOutTime)
+
             elif j.isCheckIn == True and j.isCheckOut == True and output_data[-1] == '1':
-                output_data[3] = str(j.checkInTime)
-                output_data[-1] = '2'
+                output_data[4] = str(j.checkInTime)
+                output_data[5] = str(j.checkOutTime)
+                output_data[-1] = '2'   
+
+            # 簽到成功但是簽退失敗
+            elif j.isCheckIn == True and j.isCheckOut == False and output_data[-1] == '1':
+                output_data[4] = str(j.checkInTime)
+                output_data[5] = str(j.checkOutTime)
 
         worksheet.write_row('A' + str(count + 2), output_data)
         count += 1
@@ -71,6 +97,8 @@ def check_in_out():
 
             # 如果此時段已經簽到/退完成
             if i.isCheckIn == True and i.isCheckOut == True: 
+                print(i.id)
+                print("此時段已完成簽到/退")
                 continue
 
             if time_now.hour - int(work_time_start[0]) == 0 and time_now.minute -  int(work_time_start[1]) <= 15  and i.isCheckIn == False:
@@ -80,6 +108,7 @@ def check_in_out():
                 form.student_id.data = ""
                 #print("簽到成功")
                 flash(student_id + ' 簽到成功')
+                print("簽到成功")
                 return render_template('admin/check_in_out.html', form = form)
                
             elif time_now.hour - int(work_time_end[0]) == 0 and time_now.minute -  int(work_time_end[1]) <= 15 and i.isCheckIn == True:
@@ -90,7 +119,11 @@ def check_in_out():
                 #print(time_now)
                 #print("簽退成功")
                 flash(student_id + " 簽退成功")
+                print("簽退成功")
                 return render_template('admin/check_in_out.html', form = form)
+            elif i.isCheckIn == True and isCheckOut == False  :
+                i.checkOutTime = time_now
+                print("有簽到但簽退失敗")
     
         flash("簽到/退失敗，請確認是否在時間內或學號是否有誤。")
     return render_template('admin/check_in_out.html', form = form)
@@ -322,16 +355,6 @@ def delete_arrangement():
 
     return redirect(url_for('admin.book_management'))
 
-@bp.route('/download', methods=['GET'])
-@login_required
-@admin_required
-def download():
-    response = create_workbook()
-    response.headers['Content-Type'] = "utf-8"
-    response.headers["Cache-Control"] = "no-cache"
-    response.headers["Content-Disposition"] = "attachment; filename=student_data.xlsx"
-    return response
-
 @bp.route('/del_semester', methods = ['GET', 'POST'])
 @login_required
 @admin_required
@@ -359,3 +382,52 @@ def del_manage_date():
         form.del_manage_date.data = ''
         
     return render_template('admin/del_manage_date.html', form=form)
+
+@bp.route('/forget_password', methods = ['GET', 'POST'])
+@login_required
+@admin_required
+def forget_password():
+    form = ForgetPasswordForm()
+ 
+    if form.validate_on_submit():
+        user_data = UserData.query.filter_by(id=form.student_id.data).first()
+        setattr(user_data, "password_hash", "pbkdf2:sha256:150000$MnKHvzrz$e05d72a2a9d15cc779a4cdcbcb39cd332392ceb6f29df2e6754f64f24adf03b6")
+        db.session.commit()
+        form.student_id.data = ''
+        flash(form.student_id.data + " 已還原密碼為123456")
+        return redirect(url_for('admin.forget_password'))
+        
+    return render_template('admin/forget_password.html', form = form)
+
+@bp.route('/download', methods = ['GET', 'POST'])
+@login_required
+@admin_required
+def download():
+    form = DownloadForm()
+    if form.validate_on_submit():
+        response = create_workbook(form.student_id_range.data, form.semester_name.data)
+        response.headers['Content-Type'] = "utf-8"
+        response.headers["Cache-Control"] = "no-cache"
+        response.headers["Content-Disposition"] = "attachment; filename=student_data.xlsx"
+        return response
+    return render_template('admin/download.html', form = form)
+
+@bp.route('/CheckInProblem', methods = ['GET', 'POST'])
+@login_required
+@admin_required
+def CheckInProblem():
+    form = CheckInProblemForm()
+
+    if form.validate_on_submit():
+        semester_status = Semester.query.filter_by(name=form.semester_name.data).first()
+        check_data = ShiftArrangement.query.filter_by(uid=form.student_id.data, date=form.date.data, did=form.did.data, semester_id=semester_status.id).first()
+        
+        setattr(check_data, "isCheckIn", True)
+        setattr(check_data, "isCheckOut", True)
+        db.session.commit()
+        form.student_id.data = ''
+        form.date.data = ''
+        form.did.data = ''
+        form.semester_name.data = ''
+        
+    return render_template('admin/CheckInProblem.html', form=form)

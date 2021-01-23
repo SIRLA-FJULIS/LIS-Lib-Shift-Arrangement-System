@@ -52,3 +52,19 @@ class DelSemesterForm(FlaskForm):
 class DelManage_dateForm(FlaskForm):
     del_manage_date = StringField("假期名稱", validators=[DataRequired()])
     submit = SubmitField("刪除")
+
+class ForgetPasswordForm(FlaskForm):
+    student_id = StringField("學號", validators=[DataRequired()])
+    submit = SubmitField("確定")
+
+class DownloadForm(FlaskForm):
+    student_id_range = StringField("請輸入學號開頭三碼", validators=[DataRequired()])
+    semester_name = StringField("請輸入學期名稱", validators=[DataRequired()])
+    submit = SubmitField("確定")
+
+class CheckInProblemForm(FlaskForm):
+    student_id = StringField("學號", validators=[DataRequired()])
+    date = DateField('日期', format='%Y-%m-%d', validators=[DataRequired()])
+    did = StringField("時段編號", validators=[DataRequired()])
+    semester_name = StringField("請輸入學期名稱", validators=[DataRequired()])
+    submit = SubmitField("補簽到")
